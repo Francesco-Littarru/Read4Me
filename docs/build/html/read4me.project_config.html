@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Customize the project .ini files &mdash; Read4Me 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Create a dataset - datafactory module" href="read4me.datafactory.html" />
+    <link rel="prev" title="custom_filters module" href="read4me.custom_filters.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Read4Me
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Telegram Bot</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="read4me.telegram_module.html">Main Telegram Bot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.custom_filters.html">Telegram Custom Filters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Customize the project .ini files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#virtual-environment-venv">2. Virtual environment (venv)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#install-the-project">3. Install the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#generate-topics-and-models">4. Generate topics and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#configure-the-bot-with-botfather">5. Configure the bot with BotFather</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#run-the-bot">6. Run the bot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="read4me.datafactory.html">Dataset Creation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.topicsprocessor.html">Process Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.docprocessing.html">Process Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.userbase.html">Manage users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.models.html">Retrieve models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="read4me.scripts.make_corpus.html">Corpus script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.scripts.topics.html">Topics script</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Read4Me</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">1. Customize the project .ini files</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/read4me.project_config.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>The project uses some configuration files,
+a <a class="reference external" href="https://docs.python.org/3/library/venv.html#module-venv">python virtual environment</a>, and some NLP models.</p>
+<p>Follow these steps after having cloned or downloaded the project:</p>
+<section id="customize-the-project-ini-files">
+<h1>1. Customize the project .ini files<a class="headerlink" href="#customize-the-project-ini-files" title="Permalink to this heading"></a></h1>
+<p>The <strong>config.ini</strong> file contains parameter values and paths to the data and models used by the bot.
+If you want to only create a dataset, you just need to download and extract a <a class="reference internal" href="read4me.models.html#word2vec"><span class="std std-ref">word2vec</span></a> model
+and change the “word2vec” entry to match its path.</p>
+<p>The <strong>telegram_token.ini</strong> file contains the token for the bot.
+To obtain a token, follow <a class="reference external" href="https://core.telegram.org/bots/features#botfather">this guide</a>.</p>
+<p>Both config.ini and telegram_token.ini need to reside in the root directory of the project.</p>
+</section>
+<section id="virtual-environment-venv">
+<h1>2. Virtual environment (venv)<a class="headerlink" href="#virtual-environment-venv" title="Permalink to this heading"></a></h1>
+<p>Create and activate a <a class="reference external" href="https://docs.python.org/3/library/venv.html#module-venv">virtual environment</a> with at least <strong>python 3.11</strong> as interpreter.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@userpc:~$ </span>python3.11<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="gp">user@userpc:~$ </span><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</pre></div>
+</div>
+<p>From the activated environment, use pip to install the requirements, listed in requirements.txt in the root
+directory of the project.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(venv)</span> <span class="gp">user@userpc:~$ </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The python-telegram-bot library needs to be installed with the option [job-queue] in order for the
+<a class="reference external" href="https://docs.python-telegram-bot.org/en/stable/telegram.ext.conversationhandler.html#telegram.ext.ConversationHandler.TIMEOUT" title="(in python-telegram-bot v20.4)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">TIMEOUT</span></code></a> feature to work.
+When installing, make sure that the entry “python-telegram-bot[job-queue]” in requirements.txt is present,
+otherwise reinstall it manually later.</p>
+</div>
+</section>
+<section id="install-the-project">
+<h1>3. Install the project<a class="headerlink" href="#install-the-project" title="Permalink to this heading"></a></h1>
+<p>From the activated environment, install the project as a library in it:
+Install the project in the activated environment as a library</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(venv)</span> <span class="gp">user@userpc:~$ </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>The -e option ensures that the installation stays consistent with the changes you make to the project, without
+reinstalling it every time.
+You need to reinstall it only if you modify the pyproject.toml file.</p>
+</section>
+<section id="generate-topics-and-models">
+<h1>4. Generate topics and models<a class="headerlink" href="#generate-topics-and-models" title="Permalink to this heading"></a></h1>
+<p>The bot uses a list of semantic topic vectors to look for similarity between the topics and the texts passed by the user.
+It also needs a tfidf model paired with its dictionary.</p>
+<div class="line-block">
+<div class="line">There are two scripts ready to use that generate all necessary models and data:</div>
+<div class="line">See <a class="reference internal" href="read4me.scripts.make_corpus.html#make-corpus"><span class="std std-ref">here</span></a> for how to make a corpus and generate the dictionary and the Tfidf model.</div>
+<div class="line">See <a class="reference internal" href="read4me.scripts.topics.html#id1"><span class="std std-ref">here</span></a> for how to generate the topics.</div>
+</div>
+<p>If you want, you can plug in your own <a class="reference external" href="https://radimrehurek.com/gensim/corpora/dictionary.html#gensim.corpora.dictionary.Dictionary" title="(in gensim v4.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dictionary</span></code></a> and <a class="reference external" href="https://radimrehurek.com/gensim/models/tfidfmodel.html#gensim.models.tfidfmodel.TfidfModel" title="(in gensim v4.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TfidfModel</span></code></a>.
+See <a class="reference internal" href="read4me.models.html#dictionary"><span class="std std-ref">Dictionary</span></a> and <a class="reference internal" href="read4me.models.html#tfidf"><span class="std std-ref">Tfidf</span></a> for how to generate them.
+If you use your models, then you need to update the appropriate paths in config.ini.</p>
+</section>
+<section id="configure-the-bot-with-botfather">
+<h1>5. Configure the bot with BotFather<a class="headerlink" href="#configure-the-bot-with-botfather" title="Permalink to this heading"></a></h1>
+<p>The bot needs telegram inline mode to be active,
+follow the <a class="reference external" href="https://core.telegram.org/bots/inline">official telegram guide</a> to activate it.</p>
+<p>The inline query of the bot takes a web page link as input, therefore provide an appropriate placeholder for it during
+the configuration with BothFather.</p>
+</section>
+<section id="run-the-bot">
+<span id="run-bot"></span><h1>6. Run the bot<a class="headerlink" href="#run-the-bot" title="Permalink to this heading"></a></h1>
+<p>From the activated environment, use the command “run_bot” as stated in pyproject.toml in the section [project.scripts];
+use ctrl+c to stop it.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(venv)</span> <span class="gp">user@userpc:~$ </span>run_bot
+</pre></div>
+</div>
+<p>The bot data file is generated and updated at runtime, its path is defined by the entry “telegram_pickle_persistence”
+in the config.ini file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The first time the bot is run, it might be slow to respond to a user request, this is caused by the library
+<a class="reference external" href="https://pypi.org/project/fasttext-langdetect/">fasttext-langdetect</a> that needs to download
+its language detection model before using it on texts.</p>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="read4me.custom_filters.html" class="btn btn-neutral float-left" title="custom_filters module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="read4me.datafactory.html" class="btn btn-neutral float-right" title="Create a dataset - datafactory module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Francesco Littarru.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

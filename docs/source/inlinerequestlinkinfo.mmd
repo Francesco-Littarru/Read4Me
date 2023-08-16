@@ -1,0 +1,9 @@
+---
+title: Inline Request
+---
+
+sequenceDiagram
+    participant chat
+    chat ->>+inlineBot: @read4me_tgbot https://...
+    Note right of inlineBot: The bot analyses the page
+    inlineBot ->>-chat: excerpts from page

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>read4me.models &mdash; Read4Me 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Read4Me
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Telegram Bot</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.telegram_module.html">Main Telegram Bot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.custom_filters.html">Telegram Custom Filters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html">1. Customize the project .ini files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#virtual-environment-venv">2. Virtual environment (venv)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#install-the-project">3. Install the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#generate-topics-and-models">4. Generate topics and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#configure-the-bot-with-botfather">5. Configure the bot with BotFather</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#run-the-bot">6. Run the bot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.datafactory.html">Dataset Creation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.topicsprocessor.html">Process Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.docprocessing.html">Process Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.userbase.html">Manage users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.models.html">Retrieve models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.scripts.make_corpus.html">Corpus script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.scripts.topics.html">Topics script</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Read4Me</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">read4me.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for read4me.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">**Required models and data**</span>
+<span class="sd">****************************</span>
+
+<span class="sd">#. Spacy model.</span>
+<span class="sd">#. Dictionary.</span>
+<span class="sd">#. Tfidf model.</span>
+<span class="sd">#. Trained word2vec vectors as compatible KeyedVector instance.</span>
+<span class="sd">#. A list of processed topics.</span>
+
+<span class="sd">**1. Spacy model**</span>
+<span class="sd">******************</span>
+<span class="sd">From the active virtual environment install the spacy `en_core_web_md model` as described in the `official documentation. &lt;https://spacy.io/usage/models/#download&gt;`_</span>
+<span class="sd">Example:</span>
+
+<span class="sd">.. code-block:: console</span>
+
+<span class="sd">    (venv) user@userpc:~$ python -m spacy download en_core_web_md</span>
+
+<span class="sd">.. _dictionary:</span>
+
+<span class="sd">**2. Dictionary**</span>
+<span class="sd">*****************</span>
+
+<span class="sd">The dictionary maps words to integer ids.</span>
+<span class="sd">To create a :class:`~gensim.corpora.dictionary.Dictionary` use a corpus of documents where each document is a list of \</span>
+<span class="sd">words, then save it in text format for later use and for seeing it directly in a text editor.</span>
+
+<span class="sd">Example:</span>
+
+<span class="sd">.. code-block::</span>
+
+<span class="sd">    corpus = [[&#39;first&#39;,&#39;document&#39;], [&#39;another&#39;,&#39;document&#39;], [&#39;the&#39;,&#39;last&#39;,&#39;one&#39;]]</span>
+<span class="sd">    dct = Dictionary(documents=corpus)</span>
+<span class="sd">    dct.save_as_text(&#39;path_to_dictionary.txt&#39;)</span>
+
+<span class="sd">.. _tfidf:</span>
+
+<span class="sd">**3. Tfidf model**</span>
+<span class="sd">******************</span>
+
+<span class="sd">The :class:`~gensim.models.tfidfmodel.TfidfModel` is used to assign an importance value to a word in a document</span>
+<span class="sd">accounting for the frequency of the word in the document and in the entire corpus. \</span>
+<span class="sd">The model can be directly generated from the dictionary and then saved in a file.</span>
+
+<span class="sd">.. code-block::</span>
+
+<span class="sd">    dct = Dictionary.load_from_text(&#39;path_to_dictionary.txt&#39;)</span>
+<span class="sd">    tfidf = TfidfModel(dictionary=dct)</span>
+<span class="sd">    tfidf.save(&#39;tfidf_model&#39;)</span>
+
+<span class="sd">.. _word2vec:</span>
+
+<span class="sd">**4. Word2Vec**</span>
+<span class="sd">***************</span>
+
+<span class="sd">You can find different trained models ready to download here: http://vectors.nlpl.eu/repository/.</span>
+<span class="sd">This project requires an english model with normalized vectors, optionally trained on a lemmatized corpus.</span>
+<span class="sd">(This project has been tested with the model with ID 11)</span>
+
+<span class="sd">**5. Topics**</span>
+<span class="sd">*************</span>
+
+<span class="sd">For this project, use the script read4me/scripts/topics.py to generate the topics.</span>
+<span class="sd">For more information about the script, in the activated virtual environment, type:</span>
+
+<span class="sd">.. code-block:: console</span>
+
+<span class="sd">    (venv) user@userpc:~$ python -m read4me.scripts.topics -h</span>
+
+<span class="sd">The script can train a topic model and process the generated topics with</span>
+<span class="sd">:class:`~read4me.topicsprocessor.TopicsProcessor`, the topics are then vectorized using a word2vec model</span>
+<span class="sd">(the same returned from :func:`get_models`) and saved in a file.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="kn">from</span> <span class="nn">gensim.corpora</span> <span class="kn">import</span> <span class="n">Dictionary</span>
+<span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">KeyedVectors</span><span class="p">,</span> <span class="n">TfidfModel</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">spacy</span>
+
+
+<span class="c1"># noinspection PyDefaultArgument</span>
+<div class="viewcode-block" id="get_models"><a class="viewcode-back" href="../../read4me.models.html#read4me.models.get_models">[docs]</a><span class="k">def</span> <span class="nf">get_models</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the models and data as requested.</span>
+
+<span class="sd">    String parameters:</span>
+
+<span class="sd">    #. &#39;nlp&#39; - Spacy language model, see `spacy models &lt;https://spacy.io/usage/models/&gt;`_.</span>
+<span class="sd">    #. &#39;dct&#39; - :class:`~gensim.corpora.dictionary.Dictionary` obtained from a corpus.</span>
+<span class="sd">    #. &#39;tfidf&#39; - :class:`~gensim.models.tfidfmodel.TfidfModel` obtained from the dictionary.</span>
+<span class="sd">    #. &#39;w2v&#39; - :class:`~gensim.models.keyedvectors.KeyedVectors` trained model.</span>
+<span class="sd">    #. &#39;topics&#39; - list of topic vectors and separately their string descriptions.</span>
+
+<span class="sd">    :param args: List of strings.</span>
+<span class="sd">    :return: Python list of models and data in this order: [nlp, dct, tfidf, w2v, topics, topics_descriptions]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;config.ini&#39;</span><span class="p">)</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">]</span>
+
+    <span class="n">_dict_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;dictionary&#39;</span><span class="p">])</span>
+    <span class="n">_tfidf_model_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;tfidf&#39;</span><span class="p">])</span>
+    <span class="n">_topics_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;topics_vectors&#39;</span><span class="p">])</span>
+    <span class="n">_w2v_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;word2vec&#39;</span><span class="p">])</span>
+    <span class="n">_topics_string_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;topics&#39;</span><span class="p">])</span>
+
+    <span class="n">mod_dict</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="s1">&#39;nlp&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">mod_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_md&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ner&#39;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="s1">&#39;dct&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">mod_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Dictionary</span><span class="o">.</span><span class="n">load_from_text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_dict_path</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="s1">&#39;tfidf&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">mod_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TfidfModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_tfidf_model_path</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="s1">&#39;w2v&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">mod_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_w2v_path</span><span class="p">),</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s1">&#39;topics&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_topics_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">_file</span><span class="p">:</span>
+            <span class="n">_topics_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">_file</span><span class="p">)</span>
+            <span class="n">mod_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">_topics_dict</span><span class="p">[</span><span class="n">_vec</span><span class="p">]</span> <span class="k">for</span> <span class="n">_vec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_topics_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())]))</span>
+        <span class="k">with</span> <span class="n">_topics_string_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">_file</span><span class="p">:</span>
+            <span class="n">mod_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">_file</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">mod_dict</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Francesco Littarru.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

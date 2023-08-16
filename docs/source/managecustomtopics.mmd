@@ -1,0 +1,25 @@
+---
+title: Manage custom topics
+---
+
+stateDiagram-v2
+    [*] --> /topics
+    /topics --> CHOICE: choose action
+    %% The user press Add
+    CHOICE --> ADD: Type topic
+    ADD --> ADD_LOOP: Add topic?
+    state select <<choice>>
+    ADD_LOOP --> select: read user response
+    select --> ADD: "Yes"\nType topic
+    select --> /topics: "No"
+    %% The user press Delete
+    CHOICE --> DELETE: topic id
+    DELETE --> DELETE: topic id
+    DELETE --> /topics
+    %% The user press Delete all
+    CHOICE --> DELETE_ALL: confirm?
+    DELETE_ALL --> DELETE_ALL: "Yes"
+    DELETE_ALL --> /topics: "No"
+    DELETE_ALL --> /topics
+    %% The user press Exit
+    CHOICE --> [*]: Exit

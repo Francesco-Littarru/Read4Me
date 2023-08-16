@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Read4Me bot user guide &mdash; Read4Me 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="custom_filters module" href="read4me.custom_filters.html" />
+    <link rel="prev" title="Welcome to Read4Me’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Read4Me
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Telegram Bot</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Main Telegram Bot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#obtain-interest-prediction">1. Obtain interest prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manage-your-custom-reading-topics">2. Manage your custom reading topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#obtain-web-page-excerpts">3. Obtain web page excerpts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bot-execution">Bot execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bot-source-code">Bot source code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#read4me.telegram_module.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.custom_filters.html">Telegram Custom Filters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="read4me.project_config.html">1. Customize the project .ini files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.project_config.html#virtual-environment-venv">2. Virtual environment (venv)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.project_config.html#install-the-project">3. Install the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.project_config.html#generate-topics-and-models">4. Generate topics and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.project_config.html#configure-the-bot-with-botfather">5. Configure the bot with BotFather</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.project_config.html#run-the-bot">6. Run the bot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="read4me.datafactory.html">Dataset Creation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.topicsprocessor.html">Process Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.docprocessing.html">Process Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.userbase.html">Manage users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.models.html">Retrieve models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="read4me.scripts.make_corpus.html">Corpus script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read4me.scripts.topics.html">Topics script</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Read4Me</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Read4Me bot user guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/read4me.telegram_module.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="read4me-bot-user-guide">
+<h1>Read4Me bot user guide<a class="headerlink" href="#read4me-bot-user-guide" title="Permalink to this heading"></a></h1>
+<p>The main goal of the bot is to let you save some time online by reading articles for you.</p>
+<p>It may have happened to you to look for information online and you had to open several pages of long readings,
+many of which are either not what you are looking for, or do not treat some aspects deeply enough to be useful for you.
+You still had to spend the time reading them nevertheless.</p>
+<p>Here the bot can help by analysing the content of the article for you and extracting relevant pieces from it.</p>
+<p>If you send the bot a link to an article, the bot will show you some excerpts from it, each related to one
+of the main subjects the article talks about.</p>
+<p>The bot can also learn which topics you usually like to read, you only need to leave a feedback after you read one article;
+the next time, along with the excerpts, the bot will give you a prediction of interest based on your preferences.
+This should help you choose which articles are worth their reading time.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The bot uses a fixed list of topics when it analyses documents, these topics are generated from a
+<a class="reference external" href="https://data.commoncrawl.org/crawl-data/CC-NEWS/index.html">News Dataset</a>
+that may lack some topics not generally treated in the news.
+In this case, the results and predictions may not be good enough for your use case.
+The topics can be updated while keeping what the bot have learned.</p>
+</div>
+<p>You can also put the focus of the bot on specific topics that you can manually define,
+the bot will show them to you when you provide an article that treats them.</p>
+<p>You can interact with it in three ways:</p>
+<ol class="arabic simple">
+<li><p>Obtain an interest prediction, based on learned personal preferences.</p></li>
+<li><p>Manage your custom reading topics.</p></li>
+<li><p>Obtain selected web page excerpts.</p></li>
+</ol>
+<section id="obtain-interest-prediction">
+<h2>1. Obtain interest prediction<a class="headerlink" href="#obtain-interest-prediction" title="Permalink to this heading"></a></h2>
+<p>You can get information on a web page by sending a link to the bot’s chat.
+This will show you a prediction, based on your reading interests.
+At the end, the bot will ask you to leave a feedback for your interest in the article.</p>
+<div class="mermaid">
+            ---
+title: Request Link Information
+---
+
+sequenceDiagram
+    participant User
+    User -&gt;&gt;+Bot: https://...
+    Note right of Bot: The bot analyses the page
+    Bot -&gt;&gt; User: interest prediction
+    Bot -&gt;&gt; User: excerpts from page
+    User -&gt;&gt; Bot: feedback
+    Bot -&gt;&gt;-User: bye!
+
+
+        </div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The bot learns your reading preferences, but it does not collect any information that can
+be used to log your reading history nor any other data, not even the feedback value you left.
+It only knows your telegram id.</p>
+</div>
+<p>The bot has internally a series of topics, shared among all users, that it uses when processing a document.
+Whenever you leave a feedback, the bot updates your reading preferences by using the computed mixture of
+topics found in the web page along with your feedback value.</p>
+</section>
+<section id="manage-your-custom-reading-topics">
+<h2>2. Manage your custom reading topics<a class="headerlink" href="#manage-your-custom-reading-topics" title="Permalink to this heading"></a></h2>
+<p>You can define your custom topics, they will be used to analyse the content of the web pages you provide.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the bot’s context, a topic is just a word cloud, such as “money investment stock finance” or “festival music dance”.</p>
+</div>
+<p>In the bot’s chat, type the command <strong>/topics</strong>.</p>
+<p>You will be presented with the topics that you have and with up to four choices:</p>
+<ul class="simple">
+<li><p>Add a topic</p></li>
+<li><p>Delete a topic</p></li>
+<li><p>Delete all topics</p></li>
+<li><p>Exit</p></li>
+</ul>
+<div class="mermaid">
+            ---
+title: Manage custom topics
+---
+
+stateDiagram-v2
+    [*] --&gt; /topics
+    /topics --&gt; CHOICE: choose action
+    %% The user press Add
+    CHOICE --&gt; ADD: Type topic
+    ADD --&gt; ADD_LOOP: Add topic?
+    state select &lt;&lt;choice&gt;&gt;
+    ADD_LOOP --&gt; select: read user response
+    select --&gt; ADD: &quot;Yes&quot;\nType topic
+    select --&gt; /topics: &quot;No&quot;
+    %% The user press Delete
+    CHOICE --&gt; DELETE: topic id
+    DELETE --&gt; DELETE: topic id
+    DELETE --&gt; /topics
+    %% The user press Delete all
+    CHOICE --&gt; DELETE_ALL: confirm?
+    DELETE_ALL --&gt; DELETE_ALL: &quot;Yes&quot;
+    DELETE_ALL --&gt; /topics: &quot;No&quot;
+    DELETE_ALL --&gt; /topics
+    %% The user press Exit
+    CHOICE --&gt; [*]: Exit
+        </div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Typing <strong>help</strong> from anywhere will let you see a guide for the custom topics.</p></li>
+<li><p>Typing <strong>stop</strong> from anywhere will close the conversation.</p></li>
+</ul>
+</div>
+<p>You can add as many topics as you like, you can decide to use them to identify web content that you like or that you don’t.
+You can choose to delete your topics one by one or all of them at once.
+After every change, the bot will show you the updated list of custom topics.</p>
+</section>
+<section id="obtain-web-page-excerpts">
+<h2>3. Obtain web page excerpts<a class="headerlink" href="#obtain-web-page-excerpts" title="Permalink to this heading"></a></h2>
+<p>You can provide the bot a link to a web page from every chat, using the <a class="reference external" href="https://core.telegram.org/bots/inline">inline telegram mode</a>.</p>
+<div class="line-block">
+<div class="line"><strong>Use a space between the bot’s name and the link you provide!</strong></div>
+</div>
+<div class="mermaid">
+            ---
+title: Inline Request
+---
+
+sequenceDiagram
+    participant chat
+    chat -&gt;&gt;+inlineBot: &#64;read4me_tgbot https://...
+    Note right of inlineBot: The bot analyses the page
+    inlineBot -&gt;&gt;-chat: excerpts from page
+
+        </div></section>
+<section id="bot-execution">
+<h2>Bot execution<a class="headerlink" href="#bot-execution" title="Permalink to this heading"></a></h2>
+<p>To run the bot, see <a class="reference internal" href="read4me.project_config.html#run-bot"><span class="std std-ref">here</span></a>.</p>
+</section>
+<section id="bot-source-code">
+<h2>Bot source code<a class="headerlink" href="#bot-source-code" title="Permalink to this heading"></a></h2>
+<p>Press “source” to see the code or check the full project on github.</p>
+<span class="target" id="module-read4me.telegram_module"></span><dl class="py function">
+<dt class="sig sig-object py" id="read4me.telegram_module.run">
+<span class="sig-prename descclassname"><span class="pre">read4me.telegram_module.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/read4me/telegram_module.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#read4me.telegram_module.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run the telegram bot.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Read4Me’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="read4me.custom_filters.html" class="btn btn-neutral float-right" title="custom_filters module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Francesco Littarru.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

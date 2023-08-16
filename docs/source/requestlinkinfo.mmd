@@ -1,0 +1,13 @@
+---
+title: Request Link Information
+---
+
+sequenceDiagram
+    participant User
+    User ->>+Bot: https://...
+    Note right of Bot: The bot analyses the page
+    Bot ->> User: interest prediction
+    Bot ->> User: excerpts from page
+    User ->> Bot: feedback
+    Bot ->>-User: bye!
+

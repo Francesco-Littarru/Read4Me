@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>read4me.telegram_module &mdash; Read4Me 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Read4Me
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Telegram Bot</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.telegram_module.html">Main Telegram Bot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.custom_filters.html">Telegram Custom Filters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html">1. Customize the project .ini files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#virtual-environment-venv">2. Virtual environment (venv)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#install-the-project">3. Install the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#generate-topics-and-models">4. Generate topics and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#configure-the-bot-with-botfather">5. Configure the bot with BotFather</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.project_config.html#run-the-bot">6. Run the bot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.datafactory.html">Dataset Creation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.topicsprocessor.html">Process Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.docprocessing.html">Process Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.userbase.html">Manage users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.models.html">Retrieve models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.scripts.make_corpus.html">Corpus script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../read4me.scripts.topics.html">Topics script</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Read4Me</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">read4me.telegram_module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for read4me.telegram_module</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">telegram</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InlineKeyboardButton</span><span class="p">,</span>
+    <span class="n">InlineKeyboardMarkup</span><span class="p">,</span>
+    <span class="n">InlineQueryResultArticle</span><span class="p">,</span>
+    <span class="n">InputTextMessageContent</span><span class="p">,</span>
+    <span class="n">MessageEntity</span><span class="p">,</span>
+    <span class="n">Update</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">telegram.constants</span> <span class="kn">import</span> <span class="n">ChatAction</span>
+<span class="kn">from</span> <span class="nn">telegram.ext</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Application</span><span class="p">,</span>
+    <span class="n">ApplicationBuilder</span><span class="p">,</span>
+    <span class="n">CallbackQueryHandler</span><span class="p">,</span>
+    <span class="n">CommandHandler</span><span class="p">,</span>
+    <span class="n">ContextTypes</span><span class="p">,</span>
+    <span class="n">ConversationHandler</span><span class="p">,</span>
+    <span class="n">filters</span><span class="p">,</span>
+    <span class="n">InlineQueryHandler</span><span class="p">,</span>
+    <span class="n">MessageHandler</span><span class="p">,</span>
+    <span class="n">PicklePersistence</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">read4me.custom_filters</span> <span class="kn">import</span> <span class="n">filter_deny</span><span class="p">,</span> <span class="n">filter_confirm</span><span class="p">,</span> <span class="n">filter_bot_inline_input</span><span class="p">,</span> <span class="n">filter_topics_delete</span>
+<span class="kn">from</span> <span class="nn">read4me.datafactory</span> <span class="kn">import</span> <span class="n">CorpusBuilder</span>
+<span class="kn">from</span> <span class="nn">read4me.models</span> <span class="kn">import</span> <span class="n">get_models</span>
+<span class="kn">from</span> <span class="nn">read4me.userbase</span> <span class="kn">import</span> <span class="n">UserBase</span><span class="p">,</span> <span class="n">UserPreferences</span>
+<span class="kn">from</span> <span class="nn">read4me.docprocessing</span> <span class="kn">import</span> <span class="n">Doc</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(levelname)s</span><span class="s2"> </span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2"> </span><span class="si">%(funcName)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">datefmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;telegram_module&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../read4me.telegram_module.html#read4me.telegram_module.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the telegram bot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># local constants</span>
+    <span class="n">_USER_BASE_</span> <span class="o">=</span> <span class="s2">&quot;user_base&quot;</span>
+    <span class="n">_LAST_MSG_ID_</span> <span class="o">=</span> <span class="s2">&quot;last_message_id&quot;</span>
+    <span class="n">_TIMEOUT_</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">60</span>  <span class="c1"># minutes times seconds</span>
+
+    <span class="c1"># get the necessary models</span>
+    <span class="p">[</span><span class="n">nlp</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">tfidf</span><span class="p">,</span> <span class="n">w2v</span><span class="p">,</span> <span class="n">topics</span><span class="p">,</span> <span class="n">topics_description</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">get_models</span><span class="p">([</span><span class="s1">&#39;all&#39;</span><span class="p">])]</span>
+
+    <span class="n">CHOICE</span><span class="p">,</span> <span class="n">ADD</span><span class="p">,</span> <span class="n">DELETE</span><span class="p">,</span> <span class="n">DELETE_ALL</span><span class="p">,</span> <span class="n">LOOP_ADD</span><span class="p">,</span> <span class="n">USER_VOTE</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">italic</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrap with italic tag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;i&gt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&lt;/i&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">bold</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrap with bold tag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&lt;/b&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">scorer</span><span class="p">(</span><span class="n">score</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compose a message to send to the user.</span>
+<span class="sd">        The content of the message depends on the bot score.</span>
+
+<span class="sd">        :param score: Float user-interest score assigned from the bot to a :class:`~read4me.processing.Doc`.</span>
+<span class="sd">        :return: Message to send to the user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="o">-</span><span class="mf">0.6</span> <span class="o">&lt;=</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;I don&#39;t think you would be interested in it&quot;</span>
+        <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.6</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Not very interesting&quot;</span>
+        <span class="k">elif</span> <span class="mf">0.1</span> <span class="o">&lt;</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="mf">0.6</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;I think you would be interested in it&quot;</span>
+        <span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.6</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Very interesting&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;I&#39;m unsure about this, let me know if you read it.&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">score</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">dash</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;-&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+        <span class="n">empty</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; &#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span> <span class="o">-</span> <span class="n">q</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)])</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; &#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">a_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(-)</span><span class="si">{</span><span class="n">empty</span><span class="si">}</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">dash</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="n">space</span><span class="si">}</span><span class="s2">(+)&quot;</span>
+        <span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">a_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(-)</span><span class="si">{</span><span class="n">space</span><span class="si">}</span><span class="s2"> |</span><span class="si">{</span><span class="n">dash</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">empty</span><span class="si">}</span><span class="s2">(+)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">a_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(-)</span><span class="si">{</span><span class="n">space</span><span class="si">}</span><span class="s2">&lt;|&gt;</span><span class="si">{</span><span class="n">space</span><span class="si">}</span><span class="s2">(+)&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">2.2f</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">a_message</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear the last msg id from the bot data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_LAST_MSG_ID_</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">link_request</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show information of a document to the user.</span>
+<span class="sd">        If the user has custom topics, show which ones are similar to the given article.</span>
+<span class="sd">        At the end ask for feedback to learn the user preferences.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">effective_user</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">send_message</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">,</span> <span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="c1"># check data availability from link before proceeding further</span>
+        <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;I&#39;m processing your link, one moment please..&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ChatAction</span><span class="o">.</span><span class="n">TYPING</span><span class="p">)</span>
+        <span class="n">ent</span><span class="p">:</span> <span class="n">MessageEntity</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="n">ent</span><span class="o">.</span><span class="n">offset</span><span class="p">:</span> <span class="n">ent</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">ent</span><span class="o">.</span><span class="n">length</span><span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">CorpusBuilder</span><span class="o">.</span><span class="n">doc_from_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;I&#39;m sorry, I couldn&#39;t retrieve the article.&quot;</span><span class="p">)</span>
+            <span class="n">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">END</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w2v</span><span class="p">,</span> <span class="n">tfidf</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">nlp</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;VERB&quot;</span><span class="p">,</span> <span class="s2">&quot;NOUN&quot;</span><span class="p">},</span> <span class="n">topics</span><span class="p">,</span> <span class="n">CorpusBuilder</span><span class="o">.</span><span class="n">clean_doc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;I&#39;m sorry, the article doesn&#39;t seem to be in english.&quot;</span><span class="p">)</span>
+            <span class="n">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">END</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="s1">&#39;doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span>
+
+        <span class="n">user_base</span><span class="p">:</span> <span class="n">UserBase</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># build message for custom topics if the user has any</span>
+        <span class="k">if</span> <span class="n">user_base</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">has_custom_topics</span><span class="p">():</span>
+            <span class="n">custom_topics</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">user_base</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">custom_topics</span><span class="p">)</span>
+            <span class="n">doc_custom</span><span class="p">:</span> <span class="n">Doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span> \
+                <span class="n">process</span><span class="p">(</span><span class="n">w2v</span><span class="p">,</span> <span class="n">tfidf</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">nlp</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;VERB&quot;</span><span class="p">,</span> <span class="s2">&quot;NOUN&quot;</span><span class="p">},</span> <span class="n">custom_topics</span><span class="p">,</span> <span class="n">CorpusBuilder</span><span class="o">.</span><span class="n">clean_doc</span><span class="p">)</span>
+            <span class="n">score_custom</span> <span class="o">=</span> <span class="n">user_base</span><span class="o">.</span><span class="n">score_custom_topics</span><span class="p">(</span><span class="n">doc_custom</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">score_custom</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">doc_custom</span><span class="o">.</span><span class="n">has_triggered_fallback</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">t_id</span><span class="p">,</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">score_custom</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;• &quot;</span> <span class="o">+</span> <span class="n">description</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span>
+                <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;It matches with one or more of your topics!</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">bold</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;HTML&#39;</span><span class="p">)</span>
+                <span class="n">topics_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc_custom</span><span class="o">.</span><span class="n">topic_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">excerpts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">doc_custom</span><span class="o">.</span><span class="n">excerpt</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">topics_ids</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">excerpt</span> <span class="ow">in</span> <span class="n">excerpts</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">excerpt</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="c1"># proceed on scoring with the shared topics</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">user_base</span><span class="o">.</span><span class="n">predict_interest</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="n">scorer</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
+        <span class="n">topics_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">topic_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">excerpts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">excerpt</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">topics_ids</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">excerpt</span> <span class="ow">in</span> <span class="n">excerpts</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">excerpt</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;From the article:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">italic</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;HTML&quot;</span><span class="p">)</span>
+
+        <span class="c1"># build the feedback-keyboard and show it to the user</span>
+        <span class="n">inline_keyboard</span> <span class="o">=</span> <span class="p">[[</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;-2&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=-</span><span class="mi">2</span><span class="p">),</span>
+                            <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;-1&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span>
+                            <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                            <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                            <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">2</span><span class="p">)]]</span>
+        <span class="n">reply_markup</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">inline_keyboard</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;How much would you rate your interest in the article?&quot;</span><span class="p">,</span>
+                                              <span class="n">reply_markup</span><span class="o">=</span><span class="n">reply_markup</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="n">USER_VOTE</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">feedback</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the user feedback and update his/her preferences accordingly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">callback_query</span>
+        <span class="k">await</span> <span class="n">query</span><span class="o">.</span><span class="n">answer</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">query</span><span class="o">.</span><span class="n">edit_message_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Your vote: </span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span><span class="o">.</span><span class="n">update_user_preferences</span><span class="p">(</span>
+            <span class="n">update</span><span class="o">.</span><span class="n">effective_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="s1">&#39;doc&#39;</span><span class="p">],</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="s1">&#39;doc&#39;</span><span class="p">]</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Thanks for the feedback!&quot;</span><span class="p">)</span>
+        <span class="n">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">END</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">waiting_score</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a message to the user if s/he&#39;s trying to issue another request before leaving a feedback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Please leave a feedback for the article before issuing other requests or type &#39;stop&#39;.&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                       <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                                       <span class="n">reply_to_message_id</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">])</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">end_state</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the conversation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Bye!&quot;</span><span class="p">)</span>
+        <span class="n">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">END</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">time_expired</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the conversation after some amount of time if the user was inactive while the bot was waiting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                       <span class="n">text</span><span class="o">=</span><span class="s2">&quot;You didn&#39;t respond for quite some time, &quot;</span>
+                                            <span class="s2">&quot;I&#39;m closing the conversation. Bye!&quot;</span><span class="p">,</span>
+                                       <span class="n">reply_to_message_id</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">])</span>
+        <span class="n">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">END</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show an introduction to the bot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">send_message</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">,</span> <span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">msg1</span> <span class="o">=</span> <span class="s2">&quot;Hi!</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;This is the helper page of the bot.</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;My job is to help you save some of your time online.</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;I can read web pages and analyze their content.</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;Send me a link and I will show you the most relevant pieces of it.</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;Leave a feedback after you read the original page so I can learn your reading preferences &quot;</span> \
+               <span class="s2">&quot;and advise you better on the next ones you send me. &quot;</span> \
+               <span class="s2">&quot;(I won&#39;t send anything of what I learn to anyone)&quot;</span>
+        <span class="n">msg2</span> <span class="o">=</span> <span class="s2">&quot;Also you can define your /topics and I will match them with the pages you send me.&quot;</span> \
+               <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">To read this guide again type /help</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;To see what you can do with the bot type /commands&quot;</span>
+        <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="n">msg1</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="n">msg2</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">commands</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show a list of commands and inputs that the bot can accept.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hi, these are the commands and inputs that you can send me</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;/help - see the help guide</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;/topics - open the menu to define personalized topics</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;/topicsinfo - see how to define and use topics</span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;/commands - see this list</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;&lt;b&gt;Send a link in this chat&lt;/b&gt;</span><span class="se">\n</span><span class="s2">Obtain a prediction of interest thanks to your feedbacks and get &quot;</span> \
+              <span class="s2">&quot;some of the most relevant sentences from the article</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;&lt;b&gt;Call me from any chat and give me a link&lt;/b&gt;, &quot;</span> \
+              <span class="sa">f</span><span class="s2">&quot;like this:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> &lt;i&gt;&lt;u&gt;link&lt;/u&gt;&lt;/i&gt; </span><span class="se">\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;I will send you some of the most relevant passages from the article&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;HTML&#39;</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sync the topics in the :class:`~read4me.userbase.UserBase` with the system topics.</span>
+<span class="sd">        This allows to use different topics and reuse the</span>
+
+<span class="sd">        This executes BEFORE starting polling from telegram servers and after application.run_polling() is called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_USER_BASE_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">application</span><span class="o">.</span><span class="n">bot_data</span><span class="p">:</span>
+            <span class="n">application</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span> <span class="o">=</span> <span class="n">UserBase</span><span class="p">(</span><span class="n">topics</span><span class="p">,</span> <span class="n">topics_description</span><span class="p">)</span>
+        <span class="n">application</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span><span class="o">.</span><span class="n">set_topics</span><span class="p">(</span><span class="n">topics</span><span class="p">,</span> <span class="n">topics_description</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topics_help</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Explanation on how to define topics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;A topic is a concept described with a group of words.</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;To define a personal topic, you can use a single word or a list of linked words, &quot;</span> \
+              <span class="s1">&#39;for example: &lt;b&gt;</span><span class="se">\n</span><span class="s1"> - &quot;music&quot;, </span><span class="se">\n</span><span class="s1"> - &quot;food recipe&quot;, </span><span class="se">\n</span><span class="s1"> - &quot;money investment stock market&quot;&lt;/b&gt;.</span><span class="se">\n</span><span class="s1">&#39;</span> \
+              <span class="s1">&#39;If you use single words, avoid generic terms such as &lt;b&gt;&quot;news&quot;&lt;/b&gt;, &#39;</span> \
+              <span class="s2">&quot;as they tend to relate to almost anything in the web.</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;Each time you will send me an link to an article, &quot;</span> \
+              <span class="s2">&quot;I will tell you which ones of your topics do match with it</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+              <span class="s2">&quot;Tip: If you define topics about articles that you don&#39;t like &quot;</span> \
+              <span class="s2">&quot;you can spot them faster!&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;HTML&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topics_request</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Present an :class:`InlineKeyboard` to perform actions on custom topics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">send_message</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">,</span> <span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">UserPreferences</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">inline_keyboard</span> <span class="o">=</span> <span class="p">[[</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;Add topic&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">2</span><span class="p">)],</span>
+                           <span class="p">[</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;Exit&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">1</span><span class="p">)]]</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">has_custom_topics</span><span class="p">():</span>
+            <span class="n">topics_vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Your topics:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">t_id</span><span class="p">,</span> <span class="n">topic</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">custom_topics_descriptions</span><span class="p">):</span>
+                <span class="n">topics_vis</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">bold</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t_id</span><span class="p">))</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">italic</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="n">topics_vis</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;HTML&quot;</span><span class="p">)</span>
+            <span class="n">inline_keyboard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;Delete topic&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+            <span class="n">inline_keyboard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;Delete all&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;You don&#39;t have custom topics.&quot;</span><span class="p">)</span>
+        <span class="n">reply_markup</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">inline_keyboard</span><span class="p">)</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;What would you like to do?&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">reply_markup</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="n">CHOICE</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">choice</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the choice made by the user on the custom-topic :class:`InlineKeyboard`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">send_message</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">,</span> <span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">callback_query</span>
+        <span class="k">await</span> <span class="n">query</span><span class="o">.</span><span class="n">answer</span><span class="p">()</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Exit&#39;</span><span class="p">,</span> <span class="s1">&#39;Add topic&#39;</span><span class="p">,</span> <span class="s1">&#39;Delete one&#39;</span><span class="p">,</span> <span class="s1">&#39;Delete all&#39;</span><span class="p">])</span>
+        <span class="k">await</span> <span class="n">query</span><span class="o">.</span><span class="n">edit_message_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;You chose: </span><span class="si">{</span><span class="n">bold</span><span class="p">(</span><span class="n">selection</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;HTML&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">selected</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;Bye!&quot;</span><span class="p">)</span>
+            <span class="n">clear_tmp_data</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">END</span>
+        <span class="k">elif</span> <span class="n">selected</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Type your topic, type &#39;help&#39; if needed&quot;</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">return</span> <span class="n">ADD</span>
+        <span class="k">elif</span> <span class="n">selected</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;Ok, give me the number of the topic to delete&quot;</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">return</span> <span class="n">DELETE</span>
+        <span class="k">elif</span> <span class="n">selected</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;All your personal topics will be deleted:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                     <span class="s2">&quot;Do you confirm? (yes/no)&quot;</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">return</span> <span class="n">DELETE_ALL</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topic_add</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manage the insertion of a new user custom topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">topic_text</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^A_Za-z0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">topic_text</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">}}</span>
+        <span class="n">oov</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">lemma_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">w2v</span><span class="o">.</span><span class="n">key_to_index</span><span class="p">}</span>
+        <span class="n">vecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">w2v</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">lemma_</span><span class="p">]</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">oov</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">vecs</span><span class="p">:</span>
+            <span class="n">user</span><span class="p">:</span> <span class="n">UserPreferences</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vecs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">has_this_custom_topic</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+                <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;You have a very similar topic already saved!&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">oov</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                   <span class="sa">f</span><span class="s2">&quot;I don&#39;t know these words and I didn&#39;t use them: </span><span class="si">{</span><span class="p">[</span><span class="o">*</span><span class="n">oov</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">add_custom_topic</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">w</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">lemma_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">oov</span><span class="p">]))</span>
+                <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Your topic has been saved!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">oov</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                               <span class="sa">f</span><span class="s2">&quot;I don&#39;t know any of these words: </span><span class="si">{</span><span class="p">[</span><span class="o">*</span><span class="n">oov</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Please try with other ones&quot;</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">return</span> <span class="n">ADD</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                             <span class="s2">&quot;Do you want to insert another topic? (yes/no)</span><span class="se">\n</span><span class="s2">type &#39;stop&#39; to quit&quot;</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="n">LOOP_ADD</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topic_add_again</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ask the user to insert a topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Type your topic.&quot;</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="n">ADD</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topics_delete</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manage the removal of a user custom topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">topic_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">UserPreferences</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">topic_id</span> <span class="o">&lt;=</span> <span class="n">user</span><span class="o">.</span><span class="n">num_custom_topics</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">delete_custom_topic</span><span class="p">(</span><span class="n">topic_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                <span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;There isn&#39;t a topic with number </span><span class="si">{</span><span class="n">topic_id</span><span class="si">}</span><span class="se">\n</span><span class="s2">Which topic do you want to delete?&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">num_custom_topics</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                               <span class="sa">f</span><span class="s2">&quot;You can choose a topic from 0 to </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">num_custom_topics</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                               <span class="s2">&quot;Type 0 if you want to delete the last topic.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">DELETE</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">has_custom_topics</span><span class="p">():</span>
+            <span class="n">topics_vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Your topics now:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">t_id</span><span class="p">,</span> <span class="n">topic</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">custom_topics_descriptions</span><span class="p">):</span>
+                <span class="n">topics_vis</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">bold</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t_id</span><span class="p">))</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">italic</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">topics_vis</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;HTML&quot;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;To delete another topic, type its number</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Your topic has been deleted</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">has_custom_topics</span><span class="p">():</span>
+                <span class="n">inline_keyboard</span> <span class="o">=</span> <span class="p">[[</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;Add topic&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">2</span><span class="p">)],</span>
+                                   <span class="p">[</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="s2">&quot;Exit&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="mi">1</span><span class="p">)]]</span>
+                <span class="n">reply_markup</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">inline_keyboard</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">update</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;What would you like to do?&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">reply_markup</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">return</span> <span class="n">CHOICE</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;Send /topics to go back or type &#39;stop&#39; to quit.&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">]</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="n">DELETE</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topics_delete_all</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete all user custom topics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">UserPreferences</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">bot_data</span><span class="p">[</span><span class="n">_USER_BASE_</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">delete_all_custom_topics</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                       <span class="s2">&quot;All your topics have been deleted.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                       <span class="s2">&quot;Send /topics to show the menu or type &#39;stop&#39; to quit.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DELETE_ALL</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">topic_not_found</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manage an invalid input when the user should enter a custom topic as a list of words.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                       <span class="sa">f</span><span class="s2">&quot;Sorry, but this doesn&#39;t seem to be a valid input,</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                       <span class="sa">f</span><span class="s2">&quot;please type the topic as a list of words.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                       <span class="sa">f</span><span class="s2">&quot;Type &#39;help&#39; if needed or &#39;stop&#39; to quit.&quot;</span><span class="p">,</span>
+                                       <span class="n">reply_to_message_id</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wrong_input</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generic wrong input message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                       <span class="s2">&quot;Please make a valid choice before continuing, or type &#39;stop&#39; to quit.&quot;</span><span class="p">,</span>
+                                       <span class="n">reply_to_message_id</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">unanswered</span><span class="p">(</span><span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ContextTypes</span><span class="o">.</span><span class="n">DEFAULT_TYPE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manage unanswered bot requests when the user tries to issue a new one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">effective_chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Please answer the question, or type &#39;stop&#39; to quit.&quot;</span><span class="p">,</span>
+                                       <span class="n">reply_to_message_id</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">user_data</span><span class="p">[</span><span class="n">_LAST_MSG_ID_</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">inline_query</span><span class="p">(</span><span class="n">update</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract some excerpts from the document when the user performs an inline query.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">inline_query</span><span class="o">.</span><span class="n">query</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">def</span> <span class="nf">extract</span><span class="p">():</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">CorpusBuilder</span><span class="o">.</span><span class="n">doc_from_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;I can&#39;t read the article, sorry&quot;</span>
+            <span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w2v</span><span class="p">,</span> <span class="n">tfidf</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">nlp</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;VERB&quot;</span><span class="p">,</span> <span class="s2">&quot;NOUN&quot;</span><span class="p">},</span> <span class="n">topics</span><span class="p">,</span> <span class="n">CorpusBuilder</span><span class="o">.</span><span class="n">clean_doc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">doc</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;I can&#39;t read the link, sorry&quot;</span>
+            <span class="n">topics_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">topic_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">excerpts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">excerpt</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">topics_ids</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">excerpt</span> <span class="ow">in</span> <span class="n">excerpts</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">excerpt</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="n">msg</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">InlineQueryResultArticle</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Get Article Info&quot;</span><span class="p">,</span>
+                <span class="n">input_message_content</span><span class="o">=</span><span class="n">InputTextMessageContent</span><span class="p">(</span><span class="n">message_text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">italic</span><span class="p">(</span><span class="n">extract</span><span class="p">()),</span>
+                                                              <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;HTML&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">await</span> <span class="n">update</span><span class="o">.</span><span class="n">inline_query</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;telegram_token.ini&#39;</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">][</span><span class="s1">&#39;token&#39;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;config.ini&#39;</span><span class="p">)</span>
+    <span class="n">pickle_tg_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">][</span><span class="s1">&#39;telegram_pickle_persistence&#39;</span><span class="p">]</span>
+
+    <span class="n">pickle_persistence</span> <span class="o">=</span> <span class="n">PicklePersistence</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">pickle_tg_data</span><span class="p">)</span>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">ApplicationBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">persistence</span><span class="p">(</span><span class="n">pickle_persistence</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">post_init</span><span class="p">(</span><span class="n">post_init</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">intro</span><span class="p">))</span>
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">(</span><span class="s1">&#39;commands&#39;</span><span class="p">,</span> <span class="n">commands</span><span class="p">))</span>
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">(</span><span class="s1">&#39;help&#39;</span><span class="p">,</span> <span class="n">intro</span><span class="p">))</span>
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">(</span><span class="s1">&#39;topicsinfo&#39;</span><span class="p">,</span> <span class="n">topics_help</span><span class="p">))</span>
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">InlineQueryHandler</span><span class="p">(</span><span class="n">inline_query</span><span class="p">))</span>
+
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span>
+        <span class="n">ConversationHandler</span><span class="p">(</span>
+            <span class="n">entry_points</span><span class="o">=</span><span class="p">[</span><span class="n">CommandHandler</span><span class="p">(</span><span class="s2">&quot;topics&quot;</span><span class="p">,</span> <span class="n">topics_request</span><span class="p">),</span>
+                          <span class="n">MessageHandler</span><span class="p">(</span><span class="o">~</span><span class="n">filter_bot_inline_input</span> <span class="o">&amp;</span>
+                                         <span class="n">filters</span><span class="o">.</span><span class="n">Entity</span><span class="p">(</span><span class="n">MessageEntity</span><span class="o">.</span><span class="n">URL</span><span class="p">),</span> <span class="n">link_request</span><span class="p">)],</span>
+            <span class="n">states</span><span class="o">=</span><span class="p">{</span>
+                <span class="n">CHOICE</span><span class="p">:</span> <span class="p">[</span><span class="n">CallbackQueryHandler</span><span class="p">(</span><span class="n">choice</span><span class="p">),</span>
+                         <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^stop$&quot;</span><span class="p">),</span> <span class="n">end_state</span><span class="p">),</span>
+                         <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^help$&quot;</span><span class="p">),</span> <span class="n">topics_help</span><span class="p">),</span>
+                         <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">wrong_input</span><span class="p">)],</span>
+
+                <span class="n">ADD</span><span class="p">:</span> <span class="p">[</span><span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^stop$&quot;</span><span class="p">),</span> <span class="n">end_state</span><span class="p">),</span>
+                      <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^help$&quot;</span><span class="p">),</span> <span class="n">topics_help</span><span class="p">),</span>
+                      <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">filters</span><span class="o">.</span><span class="n">COMMAND</span> <span class="o">&amp;</span>
+                                     <span class="o">~</span><span class="p">(</span><span class="n">filter_confirm</span> <span class="o">|</span> <span class="n">filter_deny</span><span class="p">)</span> <span class="o">&amp;</span>
+                                     <span class="o">~</span><span class="n">filters</span><span class="o">.</span><span class="n">Entity</span><span class="p">(</span><span class="n">MessageEntity</span><span class="o">.</span><span class="n">URL</span><span class="p">),</span> <span class="n">topic_add</span><span class="p">),</span>
+                      <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">topic_not_found</span><span class="p">)],</span>
+
+                <span class="n">LOOP_ADD</span><span class="p">:</span> <span class="p">[</span><span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">filters</span><span class="o">.</span><span class="n">COMMAND</span> <span class="o">&amp;</span> <span class="n">filter_confirm</span><span class="p">,</span> <span class="n">topic_add_again</span><span class="p">),</span>
+                           <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">filters</span><span class="o">.</span><span class="n">COMMAND</span> <span class="o">&amp;</span> <span class="n">filter_deny</span><span class="p">,</span> <span class="n">topics_request</span><span class="p">),</span>
+                           <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^help$&quot;</span><span class="p">),</span> <span class="n">topics_help</span><span class="p">),</span>
+                           <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^stop$&quot;</span><span class="p">),</span> <span class="n">end_state</span><span class="p">),</span>
+                           <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">wrong_input</span><span class="p">)],</span>
+
+                <span class="n">DELETE</span><span class="p">:</span> <span class="p">[</span><span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filter_topics_delete</span><span class="p">,</span> <span class="n">topics_delete</span><span class="p">),</span>
+                         <span class="n">CommandHandler</span><span class="p">(</span><span class="s2">&quot;topics&quot;</span><span class="p">,</span> <span class="n">topics_request</span><span class="p">),</span>
+                         <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^stop$&quot;</span><span class="p">),</span> <span class="n">end_state</span><span class="p">),</span>
+                         <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^help$&quot;</span><span class="p">),</span> <span class="n">topics_help</span><span class="p">),</span>
+                         <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">wrong_input</span><span class="p">)],</span>
+
+                <span class="n">DELETE_ALL</span><span class="p">:</span> <span class="p">[</span><span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filter_confirm</span><span class="p">,</span> <span class="n">topics_delete_all</span><span class="p">),</span>
+                             <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filter_deny</span><span class="p">,</span> <span class="n">topics_request</span><span class="p">),</span>
+                             <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^stop$&quot;</span><span class="p">),</span> <span class="n">end_state</span><span class="p">),</span>
+                             <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^help$&quot;</span><span class="p">),</span> <span class="n">topics_help</span><span class="p">),</span>
+                             <span class="n">CommandHandler</span><span class="p">(</span><span class="s2">&quot;topics&quot;</span><span class="p">,</span> <span class="n">topics_request</span><span class="p">),</span>
+                             <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">unanswered</span><span class="p">)],</span>
+
+                <span class="n">USER_VOTE</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="n">CallbackQueryHandler</span><span class="p">(</span><span class="n">feedback</span><span class="p">),</span>
+                    <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TEXT</span> <span class="o">&amp;</span> <span class="n">filters</span><span class="o">.</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;^stop&quot;</span><span class="p">),</span> <span class="n">end_state</span><span class="p">),</span>
+                    <span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">waiting_score</span><span class="p">)],</span>
+
+                <span class="n">ConversationHandler</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span> <span class="p">[</span><span class="n">MessageHandler</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">time_expired</span><span class="p">)],</span>
+            <span class="p">},</span>
+            <span class="n">fallbacks</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">per_chat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">conversation_timeout</span><span class="o">=</span><span class="n">_TIMEOUT_</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">application</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">MessageHandler</span><span class="p">(</span><span class="o">~</span><span class="n">filter_bot_inline_input</span><span class="p">,</span> <span class="n">commands</span><span class="p">))</span>
+    <span class="n">application</span><span class="o">.</span><span class="n">run_polling</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Francesco Littarru.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
