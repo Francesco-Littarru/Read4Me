@@ -1,0 +1,2 @@
+[console_scripts]
+run_bot = read4me.telegram_module:run
