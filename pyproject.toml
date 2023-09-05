@@ -18,4 +18,5 @@ classifiers = [
 ]
 
 [project.scripts]
+dir_setup = "read4me.scripts.dir_setup:dir_setup"
 run_bot = "read4me.telegram_module:run"

@@ -16,6 +16,7 @@ Dataset repository of the open `CommonCrawl Project <https://commoncrawl.org/>`_
 
     To start building a corpus you need to download and extract one index file from
     the list of monthly News Dataset indexes at https://data.commoncrawl.org/crawl-data/CC-NEWS/index.html.
+    Select a year and a month from the table at the link previously provided, then extract the warc.paths file.
     An index file contains a list of partial URLs for a month worth of news articles.
     Initializing a DataPaths instance with the index will also complete the URLs with a valid prefix.
 

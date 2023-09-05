@@ -1,6 +1,27 @@
 """
 Automatic download and extraction of warc archives and corpus creation from the CommonCrawl News Dataset.
 
+.. note::
+
+    To start building a corpus you need to download and extract one index file from
+    the list of monthly News Dataset indexes at https://data.commoncrawl.org/crawl-data/CC-NEWS/index.html.
+
+    Select a year and a month from the table at the link previously provided, then extract the warc.paths file.
+    An index file contains a list of partial URLs for a month worth of news articles.
+
+.. tip::
+
+    Use this command to make a corpus with all the necessary files if you are in a hurry!
+    From the activated environment:
+
+    .. code-block:: console
+
+        (venv) user@userpc:~$ python -m read4me.scripts.make_corpus 0 0 --no-keep_archive --process_missing --process_corpus
+
+    Continue reading for more detailed information.
+
+
+
 The following options are available:
 
 * **index** - File with the list of partial warc urls to download, specific to cc-news for this project.
@@ -30,7 +51,7 @@ The following entries in the config.ini file of the project need to be set:
 
 * **n_process**
 
-Usage examples:
+Detailed examples:
 
 Download and extract the first three archives of the index, do not download those already downloaded,
 delete the archives after extraction.

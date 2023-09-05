@@ -1,18 +1,18 @@
 Read4Me bot user guide
 ======================
 
-The main goal of the bot is to let you save some time online by reading articles for you.
+The main goal of the bot is to let you save some time online by letting it read the articles for you.
 
-It may have happened to you to look for information online and you had to open several pages of long readings,
-many of which are either not what you are looking for, or do not treat some aspects deeply enough to be useful for you.
+It may have happened to you to look for information online where you had to open and read several long pages,
+many of which were either not what you were looking for, or did not treat some aspects deeply enough to be useful for you.
 You still had to spend the time reading them nevertheless.
 
-Here the bot can help by analysing the content of the article for you and extracting relevant pieces from it.
+Here the bot can help by reading the content of the article for you and extracting relevant pieces from it.
 
 If you send the bot a link to an article, the bot will show you some excerpts from it, each related to one
 of the main subjects the article talks about.
 
-The bot can also learn which topics you usually like to read, you only need to leave a feedback after you read one article;
+The bot can also learn which kind of articles you usually like to read, you only need to leave a feedback after you read one article;
 the next time, along with the excerpts, the bot will give you a prediction of interest based on your preferences.
 This should help you choose which articles are worth their reading time.
 
@@ -30,7 +30,7 @@ You can interact with it in three ways:
 
 #. Obtain an interest prediction, based on learned personal preferences.
 #. Manage your custom reading topics.
-#. Obtain selected web page excerpts.
+#. Obtain selected web page excerpts using telegram's inline mode feature.
 
 1. Obtain interest prediction
 *****************************
@@ -43,8 +43,8 @@ At the end, the bot will ask you to leave a feedback for your interest in the ar
 
 .. note::
     The bot learns your reading preferences, but it does not collect any information that can
-    be used to log your reading history nor any other data, not even the feedback value you left.
-    It only knows your telegram id.
+    be used to log your reading history nor any other data, not even the feedback score you left.
+    It only saves your telegram id.
 
 The bot has internally a series of topics, shared among all users, that it uses when processing a document.
 Whenever you leave a feedback, the bot updates your reading preferences by using the computed mixture of
@@ -101,7 +101,7 @@ To run the bot, see :ref:`here <run_bot>`.
 Bot source code
 ***************
 
-Press "source" to see the code or check the full project on github.
+Press "source" to see the code or explore the full project on github.
 
 .. automodule:: read4me.telegram_module
    :members:

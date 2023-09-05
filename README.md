@@ -1,1 +1,76 @@
-Add link to RTD
+# Read4Me - A Telegram Bot
+This project provides a simple telegram bot for readers in a hurry that help them quickly decide if an article is worth reading in full.  
+
+## Project overview
+
+A common use case:  
+The bot receives a link to an article and extracts from it the relevant pieces based on the implicit topics it talks about, 
+the bot also suggests if the provided article can be interesting to read accordingly to the learned user reading preferences,
+letting him/her quickly decide either to read it or leave it.
+
+Other functionalities of the project, used by the bot, can also be used on their own for other purposes.
+In this project there are a module and a script to build an english news dataset from the [Common Crawl archives](https://commoncrawl.org/), a module
+and a script to extract topics from the dataset, and other utility modules used by the bot to analyze and get
+information from web articles.  
+See the [Modules Documentation](https://read4me.readthedocs.io/en/latest/) section for all the details.  
+
+The project has been developed on Ubuntu 22.04 with python 3.11.  
+The telegram bot makes use of the library [python-telegram-bot](https://docs.python-telegram-bot.org/en/stable/) for connecting to the telegram services.
+
+**The bot is not hosted online, but it needs to be run locally.**
+
+### The Telegram Bot
+The main component of this project is a task-based telegram bot that can be used by multiple users independently,
+with the overall goal to let them save time online.  
+The bot shows only the relevant pieces of a given article, accompanied by a prediction of how
+much the user would be interested in reading it; the user then decides either to read it or not.
+If the user decides to skip the reading, then the total time used amounts to less than the article's reading time, 
+thus freeing user time for other tasks.
+
+Other functions of the bot include:
+
+- Learn the user reading preferences through a feedback system; the bot will predict an interest score when the user give it an article to read.
+- Letting the user define a list of custom topics, then inform him/her when an article is related to them; also useful to spot unwanted readings.
+
+#### Privacy concerns
+The only personal data the bot stores is the telegram user ID and the list of custom topics, no other data is stored.  
+The user reading preferences are encoded in vectors, no web link provided to the bot is stored in any way whatsoever.  
+**No data is shared with third parties.**
+
+### Other project features
+In the project there are other modules and scripts that can be used to perform different tasks, some of which are:
+- Dataset generation; you can build a [Common Crawl News Dataset](https://data.commoncrawl.org/crawl-data/CC-NEWS/index.html) of English news articles.
+- Extract, filter and vectorize topics from a corpus. 
+- Process documents matching them for similarity with a group of topics.
+
+See the [full documentation](https://read4me.readthedocs.io/en/latest/) for all the details.
+
+***
+
+## Installing and running the bot
+The installation requires to install some python dependencies in a linux system, it is highly advised to use a 
+python virtual environment to do so in order to avoid package conflicts.
+
+First, follow the steps to [configure and install](https://read4me.readthedocs.io/en/latest/read4me.project_config.html) the project.  
+Once the project has been set up correctly, you can [run the bot](https://read4me.readthedocs.io/en/latest/read4me.project_config.html#run-the-bot) locally.
+
+***
+
+## Usage
+If you want to see how the telegram bot works and how you can use it, see the [Main Bot Documentation](https://read4me.readthedocs.io/en/latest/read4me.telegram_module.html).  
+If you instead want to use other project functions see the **_Modules Documentation_** section at [ReadTheDocs](https://read4me.readthedocs.io/en/latest/index.html).  
+
+***
+
+## Credits
+The project uses the [Spacy](https://spacy.io/) and [Gensim](https://radimrehurek.com/gensim/) libraries to treat the user documents and datasets.  
+[Trafilatura](https://github.com/adbar/trafilatura) is used to extract the documents from HTML.  
+[Fasttext-langdetect](https://github.com/zafercavdar/fasttext-langdetect) is used to detect the language of the documents.  
+The mathematical library [numpy](https://numpy.org/) is used whenever efficient computation is required on vectors and matrices.  
+The documentation is built with [sphinx](https://www.sphinx-doc.org/en/master/) and hosted on [ReadTheDocs](https://read4me.readthedocs.io/en/latest/).
+
+***
+
+## License
+This project is licensed with the GNU General Public License version 3.  
+Read the full license [here](LICENSE).

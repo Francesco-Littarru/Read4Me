@@ -1,7 +1,19 @@
 """
 Script for the training of the :mod:`~gensim.models.hdpmodel`, and for processing and vectorization of topics.
 
+.. tip::
 
+    Use this command to generate the topics if you are in a hurry!
+    From the activated environment:
+
+    .. code-block:: console
+
+        (venv) user@userpc:~$ python -m read4me.scripts.topics --train --process_topics --show_saved --vectorize
+
+    If you see errors during filtering or if you are not satisfied with the topics,
+    try tuning some topic parameters such as min_dict_count in the config.ini file.
+    
+    Continue reading for more detailed information.
 
 The following options are available:
 

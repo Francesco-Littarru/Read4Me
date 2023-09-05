@@ -11,8 +11,8 @@ from telegram.ext.filters import *
 
 class FilterBotInlineInput(MessageFilter):
     """
-    If the user performs an inline query inside the bot's private chat, the bot
-    ignores the message that was generated to respond to the inline query itself.
+    Respond only to user messages, ignore the message if the bot itself sent it as response to
+    an inline query of the user in the bot's own chat.
     """
     def filter(self, message):
         return message.via_bot and message.via_bot.is_bot

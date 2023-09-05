@@ -8,10 +8,12 @@
 #. Trained word2vec vectors as compatible KeyedVector instance.
 #. A list of processed topics.
 
+.. _spacy_model:
+
 **1. Spacy model**
 ******************
-From the active virtual environment install the spacy `en_core_web_md model` as described in the `official documentation. <https://spacy.io/usage/models/#download>`_
-Example:
+From the active virtual environment install the spacy `en_core_web_md model` as described in the `official documentation <https://spacy.io/usage/models/#download>`_
+or as in this example:
 
 .. code-block:: console
 
@@ -56,7 +58,8 @@ The model can be directly generated from the dictionary and then saved in a file
 
 You can find different trained models ready to download here: http://vectors.nlpl.eu/repository/.
 This project requires an english model with normalized vectors, optionally trained on a lemmatized corpus.
-(This project has been tested with the model with ID 11)
+Download and extract the zip file in a directory of you choice, or use the models directory.
+This project has been tested with the model with ID 11.
 
 **5. Topics**
 *************
