@@ -153,6 +153,16 @@ def run():
         score = user_base.predict_interest(doc, user_id)
         await send_message(scorer(score))
         topics_ids = list(doc.topic_counts.keys())
+
+        # add message to show the topics
+        top_msg = "It seems to be talking about these topics:\n"
+        top_desc = dict(topics_description)
+        top_desc_doc = [" ".join([w for (w, _) in le]) for le in [top_desc[i] for i in topics_ids]]
+        for _topic in top_desc_doc:
+            top_msg += "• " + _topic + "\n "
+        await send_message(top_msg)
+
+        # continue adding excerpts from shared topics found in the article
         excerpts = set(doc.excerpt(t) for t in topics_ids)
         for excerpt in excerpts:
             msg += "\n\t" + excerpt + "\n"
@@ -161,7 +171,7 @@ def run():
         # build the feedback-keyboard and show it to the user
         inline_keyboard = [[InlineKeyboardButton("-2", callback_data=-2),
                             InlineKeyboardButton("-1", callback_data=-1),
-                            InlineKeyboardButton("0", callback_data=0),
+                            InlineKeyboardButton("0 (skip)", callback_data=0),
                             InlineKeyboardButton("1", callback_data=1),
                             InlineKeyboardButton("2", callback_data=2)]]
         reply_markup = InlineKeyboardMarkup(inline_keyboard)
