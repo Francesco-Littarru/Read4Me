@@ -157,10 +157,13 @@ def run():
         # add message to show the topics
         top_msg = "It seems to be talking about these topics:\n"
         top_desc = dict(topics_description)
-        top_desc_doc = [" ".join([w for (w, _) in le]) for le in [top_desc[i] for i in topics_ids]]
+        top_desc_doc = [" ".join([w for (w, _) in t_s]) for t_s in
+                        [top_desc[idx] for idx in topics_ids
+                         if idx in top_desc.keys()]]
         for _topic in top_desc_doc:
             top_msg += "• " + _topic + "\n "
-        await send_message(top_msg)
+        if top_desc_doc:
+            await send_message(top_msg)
 
         # continue adding excerpts from shared topics found in the article
         excerpts = set(doc.excerpt(t) for t in topics_ids)
@@ -175,7 +178,7 @@ def run():
                             InlineKeyboardButton("1", callback_data=1),
                             InlineKeyboardButton("2", callback_data=2)]]
         reply_markup = InlineKeyboardMarkup(inline_keyboard)
-        msg = await update.message.reply_text(text="How much would you rate your interest in the article?",
+        msg = await update.message.reply_text(text="After reading it, how much would you rate your interest in the article?",
                                               reply_markup=reply_markup)
         context.user_data[_LAST_MSG_ID_] = msg.id
         return USER_VOTE
