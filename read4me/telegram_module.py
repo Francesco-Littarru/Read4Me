@@ -95,7 +95,7 @@ def run():
             a_message = f"(-){space} |{dash}>{empty}(+)"
         else:
             a_message = f"(-){space}<|>{space}(+)"
-        return f"Score: {score:2.2f}\n{a_message}\n{msg}"
+        return f"My interest prediction score for you is: {score:2.2f}\n{a_message}\n{msg}"
 
     def clear_tmp_data(context: ContextTypes.DEFAULT_TYPE):
         """
@@ -178,8 +178,9 @@ def run():
                             InlineKeyboardButton("1", callback_data=1),
                             InlineKeyboardButton("2", callback_data=2)]]
         reply_markup = InlineKeyboardMarkup(inline_keyboard)
-        msg = await update.message.reply_text(text="After reading it, how much would you rate your interest in the article?",
-                                              reply_markup=reply_markup)
+        msg = await update.message.reply_text(
+            text="After reading it, how much would you rate your interest in the article?",
+            reply_markup=reply_markup)
         context.user_data[_LAST_MSG_ID_] = msg.id
         return USER_VOTE
 
@@ -233,7 +234,7 @@ def run():
         """
         send_message = partial(context.bot.send_message, update.effective_chat.id)
         msg1 = "Hi!\n" \
-               "This is the helper page of the bot.\n\n" \
+               "This is the helper page of the Read4Me telegram bot.\n\n" \
                "My job is to help you save some of your time online.\n" \
                "I can read web pages and analyze their content.\n" \
                "Send me a link and I will show you the most relevant pieces of it.\n\n" \
@@ -278,14 +279,15 @@ def run():
         Explanation on how to define topics.
         """
         msg = "A topic is a concept described with a group of words.\n\n" \
-              "To define a personal topic, you can use a single word or a list of linked words, " \
+              "To define a personal topic, you can type a single word or a list of linked words, " \
               'for example: <b>\n - "music", \n - "food recipe", \n - "money investment stock market"</b>.\n' \
               'If you use single words, avoid generic terms such as <b>"news"</b>, ' \
               "as they tend to relate to almost anything in the web.\n\n" \
               "Each time you will send me an link to an article, " \
               "I will tell you which ones of your topics do match with it\n\n" \
               "Tip: If you define topics about articles that you don't like " \
-              "you can spot them faster!"
+              "you can spot them faster!\n\n" \
+              "If you requested this help guide while typing a topic, now you can continue typing it."
         await context.bot.send_message(update.effective_chat.id, msg, parse_mode="HTML")
         return None
 
@@ -328,7 +330,7 @@ def run():
             clear_tmp_data(context)
             return ConversationHandler.END
         elif selected == 2:
-            msg = await context.bot.send_message(update.effective_chat.id, "Type your topic, type 'help' if needed")
+            msg = await context.bot.send_message(update.effective_chat.id, "Type your topic, type 'help' if needed or 'stop' to quit.")
             context.user_data[_LAST_MSG_ID_] = msg.id
             return ADD
         elif selected == 3:
