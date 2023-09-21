@@ -219,7 +219,7 @@ class Doc:
             return self.__doc[start: end]
         return None
 
-    def __set_topic_counts(self, topn: int = 5):
+    def __set_topic_counts(self, topn: int = 3):
         """
         Populate a dict with the topn most frequent topics in the text, along with their counts.
 

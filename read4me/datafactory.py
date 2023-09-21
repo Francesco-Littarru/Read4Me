@@ -367,7 +367,7 @@ class CorpusBuilder:
         """
         with archive.open('rb') as stream, \
                 text_path.open('w') as processed:
-            logger.info(f"\nExtracting {archive}, writing to {text_path}\n")
+            logger.info(f"\n\nExtracting {archive}, writing to {text_path}\n")
             for record in ArchiveIterator(stream):
                 if record.rec_type == 'response':
                     html = record.content_stream().read()

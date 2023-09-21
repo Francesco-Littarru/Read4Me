@@ -125,7 +125,7 @@ def run():
             return ConversationHandler.END
         doc = Doc(text).process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, topics, CorpusBuilder.clean_doc)
         if doc is None:
-            await send_message("I'm sorry, the article doesn't seem to be in english.")
+            await send_message("I'm sorry, there was a problem extracting the article.")
             clear_tmp_data(context)
             return ConversationHandler.END
         context.user_data['doc'] = doc
@@ -156,14 +156,16 @@ def run():
 
         # add message to show the topics
         top_msg = "It seems to be talking about these topics:\n"
+        if doc.has_triggered_fallback:
+            top_msg = "The article is poorly related with these topics:\n"
         top_desc = dict(topics_description)
         top_desc_doc = [" ".join([w for (w, _) in t_s]) for t_s in
                         [top_desc[idx] for idx in topics_ids
                          if idx in top_desc.keys()]]
         for _topic in top_desc_doc:
-            top_msg += "• " + _topic + "\n "
+            top_msg += "• " + bold(_topic) + "\n"
         if top_desc_doc:
-            await send_message(top_msg)
+            await send_message(top_msg, parse_mode="HTML")
 
         # continue adding excerpts from shared topics found in the article
         excerpts = set(doc.excerpt(t) for t in topics_ids)
@@ -179,14 +181,14 @@ def run():
                             InlineKeyboardButton("2", callback_data=2)]]
         reply_markup = InlineKeyboardMarkup(inline_keyboard)
         msg = await update.message.reply_text(
-            text="After reading it, how much would you rate your interest in the article?",
+            text="How much would you rate your interest in this article?",
             reply_markup=reply_markup)
         context.user_data[_LAST_MSG_ID_] = msg.id
         return USER_VOTE
 
     async def feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
-        Read the user feedback and update his/her preferences accordingly.
+        Read the user feedback and update the preferences accordingly.
         """
         query = update.callback_query
         await query.answer()
@@ -202,7 +204,7 @@ def run():
 
     async def waiting_score(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
-        Send a message to the user if s/he's trying to issue another request before leaving a feedback.
+        Send a warning message if the user is trying to issue another request before leaving the feedback.
         """
         text = "Please leave a feedback for the article before issuing other requests or type 'stop'."
         await context.bot.send_message(chat_id=update.effective_chat.id,
