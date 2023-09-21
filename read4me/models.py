@@ -121,7 +121,9 @@ def get_models(args: list[str] = ['all']) -> list:
     if 'tfidf' in args or 'all' in args:
         mod_dict.append(TfidfModel.load(str(_tfidf_model_path)))
     if 'w2v' in args or 'all' in args:
-        mod_dict.append(KeyedVectors.load_word2vec_format(str(_w2v_path), binary=True))
+        _w2v = KeyedVectors.load_word2vec_format(str(_w2v_path), binary=True)
+        _w2v.unit_normalize_all()
+        mod_dict.append(_w2v)
     if 'topics' in args or 'all' in args:
         with _topics_path.open('rb') as _file:
             _topics_dict: dict = pickle.load(_file)
