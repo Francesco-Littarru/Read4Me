@@ -114,7 +114,7 @@ class UserPreferences:
         Use :meth:`~UserPreferences.replace_user_vector` when the topics have changed and a new vector of preferences
         needs to be set.
         Every update to the user vector is intended as a step in learning the user preferences.
-        This method uses a simple forgetting strategy of normalizing the user vector to a length of 5 every 10 updates.
+        This method uses a simple forgetting strategy of normalizing the user vector at every update.
 
         :return: User vector.
         """
@@ -131,15 +131,12 @@ class UserPreferences:
 
         Every update to the user vector is intended as a step in learning the user preferences.
 
-        This method uses a simple forgetting strategy of normalizing the user vector to a length of 5 every 10 updates.
+        This method uses a simple forgetting strategy of normalizing the user vector at every update.
 
         :param new_vec: New user vector.
         """
         self.__user_vector = new_vec
-        self.__updates_counter += 1
-        if self.__updates_counter == 10:
-            self.__user_vector = 5 * self.__user_vector / numpy.linalg.norm(self.__user_vector)
-            self.__updates_counter = 0
+        self.__user_vector = self.__user_vector / numpy.linalg.norm(self.__user_vector)
 
     def has_custom_topics(self) -> bool:
         """
@@ -342,9 +339,8 @@ class UserBase(metaclass=MetaSingleton):
         user_vector = self.user(user_id).user_vector
         if (user_vector == numpy.zeros(user_vector.shape[0])).all():
             return 0
-        # user_vector = user_vector/numpy.linalg.norm(user_vector)
         score = doc.vector().dot(user_vector)
-        return score / (1 + abs(score))
+        return score  # / (1 + abs(score))
         # return score/(math.sqrt(1+score**2))
 
     def score_custom_topics(self, doc: Doc, user_id: int, min_similarity: float = 0.55) -> list[tuple[int, str]]:
