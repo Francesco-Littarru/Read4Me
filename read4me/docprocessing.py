@@ -114,7 +114,7 @@ class Doc:
         :param min_similarity: Similarity threshold for the mapping of topics with sentences.
         :param topics_per_sentence: Maximum number of topics that should be mapped to each sentence above the similarity
                threshold.
-        :return: None if the document is not in english, otherwise return the instance.
+        :return: None if there are problems processing the document, otherwise return the instance.
         """
 
         doc = nlp(self.__doc)
@@ -130,6 +130,8 @@ class Doc:
             idx_sent = dct.doc2bow(sent_.split(" "))  # OOV words are removed here.
             if len(idx_sent) > 0:
                 idx_doc.append(idx_sent)
+        if len(idx_doc) == 0:
+            return None
         doc_tfidf = tfidf[idx_doc]
 
         # 2) semantic embedding
