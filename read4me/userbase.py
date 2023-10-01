@@ -135,8 +135,7 @@ class UserPreferences:
 
         :param new_vec: New user vector.
         """
-        self.__user_vector = new_vec
-        self.__user_vector = self.__user_vector / numpy.linalg.norm(self.__user_vector)
+        self.__user_vector = new_vec / numpy.linalg.norm(new_vec)
 
     def has_custom_topics(self) -> bool:
         """
