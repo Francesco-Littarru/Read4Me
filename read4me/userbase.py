@@ -292,7 +292,8 @@ class UserBase(metaclass=MetaSingleton):
 
         conversion_matrix = new_topics @ numpy.transpose(self.__current_topics)
         for user_id in self.__users.keys():
-            self.user(user_id).replace_user_vector(conversion_matrix @ self.user(user_id).user_vector)
+            _new_vec = conversion_matrix @ self.user(user_id).user_vector
+            self.user(user_id).replace_user_vector(_new_vec/numpy.linalg.norm(_new_vec))
 
         self.__current_topics = new_topics
         self.__topics_descriptions = new_topics_descriptions
