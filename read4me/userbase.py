@@ -126,11 +126,7 @@ class UserPreferences:
         Set the user vector with a new NDArray vector during the learning phase.
 
         Use the setter only when the new vector and the current user vector refer to the same topics.
-        Use :meth:`~UserPreferences.replace_user_vector` when the topics have changed and a new vector of preferences
-        needs to be set.
-
         Every update to the user vector is intended as a step in learning the user preferences.
-
         This method uses a simple forgetting strategy of normalizing the user vector at every update.
 
         :param new_vec: New user vector.
@@ -210,17 +206,6 @@ class UserPreferences:
         """
         return len(self.__custom_topics)
 
-    def replace_user_vector(self, new_vec: NDArray):
-        """
-        Replace the user vector with a new vector.
-
-        Do not use this method for the learning phase, use the setter :meth:`~UserPreferences.user_vector` instead.
-        The new vector can have a different number of dimensions.
-
-        :param new_vec: New user preferences vector.
-        """
-        self.__user_vector = new_vec
-
 
 class MetaSingleton(type):
     _instances = {}
@@ -292,8 +277,7 @@ class UserBase(metaclass=MetaSingleton):
 
         conversion_matrix = new_topics @ numpy.transpose(self.__current_topics)
         for user_id in self.__users.keys():
-            _new_vec = conversion_matrix @ self.user(user_id).user_vector
-            self.user(user_id).replace_user_vector(_new_vec/numpy.linalg.norm(_new_vec))
+            self.user(user_id).user_vector = conversion_matrix @ self.user(user_id).user_vector
 
         self.__current_topics = new_topics
         self.__topics_descriptions = new_topics_descriptions
