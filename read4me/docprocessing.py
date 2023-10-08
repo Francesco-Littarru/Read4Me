@@ -170,7 +170,7 @@ class Doc:
     @property
     def processed(self) -> bool:
         """
-        Get True if the document has been processed, False otherwise.
+        Return True if the document has been processed, False otherwise.
 
         :return: Boolean flag.
         """
@@ -191,7 +191,7 @@ class Doc:
     @property
     def has_triggered_fallback(self) -> bool:
         """
-        Get True if the similarity between topics and sentences has never reached the minimum value set for processing.
+        Return True if the similarity between topics and sentences has never reached the minimum value set for processing.
 
         :return: Boolean flag.
         """
