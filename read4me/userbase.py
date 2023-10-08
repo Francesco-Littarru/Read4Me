@@ -302,14 +302,21 @@ class UserBase(metaclass=MetaSingleton):
         """
         if vote == 0:
             return
-        tops = doc.topic_counts
-        new_user_vector = self.user(user_id).user_vector
-        topic_ids, _topic_counts = zip(*[(k, v) for k, v in tops.items()])
-        topic_counts = numpy.asarray(_topic_counts)
-        topic_counts = vote * topic_counts / numpy.linalg.norm(topic_counts)
-        for enum, t_id in enumerate(topic_ids):
-            new_user_vector[t_id] += topic_counts[enum]
-        self.user(user_id).user_vector = new_user_vector
+        # tops = doc.topic_counts
+        # new_user_vector = self.user(user_id).user_vector
+        # topic_ids, _topic_counts = zip(*[(k, v) for k, v in tops.items()])
+        # topic_counts = numpy.asarray(_topic_counts) * (0.1 * vote)
+        # topic_counts = topic_counts / numpy.linalg.norm(topic_counts)
+        # for enum, t_id in enumerate(topic_ids):
+        #     new_user_vector[t_id] += topic_counts[enum]
+        # self.user(user_id).user_vector = new_user_vector
+
+        # halves the vote when similarity is low
+        rescaler = 0.2
+        if doc.has_triggered_fallback:
+            rescaler /= 2
+        scaled_doc_vec = doc.vector()*(rescaler * vote)
+        self.user(user_id).user_vector += scaled_doc_vec
 
     def predict_interest(self, doc: Doc, user_id: int) -> float:
         """

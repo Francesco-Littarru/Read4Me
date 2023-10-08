@@ -273,7 +273,7 @@ class Doc:
         """
         return int(numpy.argmax(self.__similarity_matrix[:, topic_id]))
 
-    def vector(self) -> NDArray | None:
+    def vector(self) -> NDArray:
         """
         Create a normalized vector of the document, mapping dimensions to topics.
         The number of dimensions in the vector is equal to the number of topics.
@@ -281,9 +281,9 @@ class Doc:
         :return: Numpy NDArray vector.
         """
         counts = self.topic_counts
-        if not self.processed or len(counts) == 0:
-            return None
         vec = numpy.zeros(self.__similarity_matrix.shape[1])
+        if not self.processed or len(counts) == 0:
+            return vec
         for k in counts.keys():
             vec[k] = counts[k]
         vec = vec / numpy.linalg.norm(vec)
