@@ -1,0 +1,8 @@
+**/__pycache__
+
+telegram_token.ini
+
+.idea
+docs/build
+read4me/data
+venv
