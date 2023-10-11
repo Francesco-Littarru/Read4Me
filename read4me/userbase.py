@@ -114,7 +114,7 @@ class UserPreferences:
         Use :meth:`~UserPreferences.replace_user_vector` when the topics have changed and a new vector of preferences
         needs to be set.
         Every update to the user vector is intended as a step in learning the user preferences.
-        This method uses a simple forgetting strategy of normalizing the user vector at every update.
+        This method uses a simple forgetting strategy of normalizing the user vector to a length of 5 every 10 updates.
 
         :return: User vector.
         """
@@ -126,12 +126,20 @@ class UserPreferences:
         Set the user vector with a new NDArray vector during the learning phase.
 
         Use the setter only when the new vector and the current user vector refer to the same topics.
+        Use :meth:`~UserPreferences.replace_user_vector` when the topics have changed and a new vector of preferences
+        needs to be set.
+
         Every update to the user vector is intended as a step in learning the user preferences.
-        This method uses a simple forgetting strategy of normalizing the user vector at every update.
+
+        This method uses a simple forgetting strategy of normalizing the user vector to a length of 5 every 10 updates.
 
         :param new_vec: New user vector.
         """
-        self.__user_vector = new_vec / numpy.linalg.norm(new_vec)
+        self.__user_vector = new_vec
+        self.__updates_counter += 1
+        if self.__updates_counter == 10:
+            self.__user_vector = 5 * self.__user_vector / numpy.linalg.norm(self.__user_vector)
+            self.__updates_counter = 0
 
     def has_custom_topics(self) -> bool:
         """
@@ -149,7 +157,7 @@ class UserPreferences:
         :param topic: Semantic vector representing a topic.
         :return: Boolean.
         """
-        return numpy.asarray([numpy.isclose(topic, c_t).all() for c_t in self.__custom_topics]).any()
+        return bool(numpy.asarray([numpy.isclose(topic, c_t).all() for c_t in self.__custom_topics]).any())
 
     def add_custom_topic(self, topic: NDArray, topic_description: str):
         """
@@ -205,6 +213,17 @@ class UserPreferences:
         :return: Number of custom topics of the user.
         """
         return len(self.__custom_topics)
+
+    def replace_user_vector(self, new_vec: NDArray):
+        """
+        Replace the user vector with a new vector.
+
+        Do not use this method for the learning phase, use the setter :meth:`~UserPreferences.user_vector` instead.
+        The new vector can have a different number of dimensions.
+
+        :param new_vec: New user preferences vector.
+        """
+        self.__user_vector = new_vec
 
 
 class MetaSingleton(type):
@@ -277,7 +296,7 @@ class UserBase(metaclass=MetaSingleton):
 
         conversion_matrix = new_topics @ numpy.transpose(self.__current_topics)
         for user_id in self.__users.keys():
-            self.user(user_id).user_vector = conversion_matrix @ self.user(user_id).user_vector
+            self.user(user_id).replace_user_vector(conversion_matrix @ self.user(user_id).user_vector)
 
         self.__current_topics = new_topics
         self.__topics_descriptions = new_topics_descriptions
@@ -302,20 +321,12 @@ class UserBase(metaclass=MetaSingleton):
         """
         if vote == 0:
             return
-        # tops = doc.topic_counts
-        # new_user_vector = self.user(user_id).user_vector
-        # topic_ids, _topic_counts = zip(*[(k, v) for k, v in tops.items()])
-        # topic_counts = numpy.asarray(_topic_counts) * (0.1 * vote)
-        # topic_counts = topic_counts / numpy.linalg.norm(topic_counts)
-        # for enum, t_id in enumerate(topic_ids):
-        #     new_user_vector[t_id] += topic_counts[enum]
-        # self.user(user_id).user_vector = new_user_vector
 
         # halves the vote when similarity is low
-        rescaler = 0.2
+        scaling = 1
         if doc.has_triggered_fallback:
-            rescaler /= 2
-        scaled_doc_vec = doc.vector()*(rescaler * vote)
+            scaling /= 2
+        scaled_doc_vec = scaling * vote * doc.vector()
         self.user(user_id).user_vector += scaled_doc_vec
 
     def predict_interest(self, doc: Doc, user_id: int) -> float:
@@ -331,7 +342,7 @@ class UserBase(metaclass=MetaSingleton):
         if (user_vector == numpy.zeros(user_vector.shape[0])).all():
             return 0
         score = doc.vector().dot(user_vector)
-        return score  # / (1 + abs(score))
+        return score / (1 + abs(score))
         # return score/(math.sqrt(1+score**2))
 
     def score_custom_topics(self, doc: Doc, user_id: int, min_similarity: float = 0.55) -> list[tuple[int, str]]:
