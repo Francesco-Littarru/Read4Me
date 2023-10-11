@@ -48,7 +48,7 @@ def run():
     # local constants
     _USER_BASE_ = "user_base"
     _LAST_MSG_ID_ = "last_message_id"
-    _TIMEOUT_ = 30 * 60  # minutes times seconds
+    _TIMEOUT_ = 5 * 60  # minutes * seconds
 
     # get the necessary models
     [nlp, dct, tfidf, w2v, topics, topics_description] = [*get_models(['all'])]
