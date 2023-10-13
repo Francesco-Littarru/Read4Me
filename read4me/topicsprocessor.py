@@ -138,13 +138,16 @@ class TopicsProcessor:
         :param min_count: Threshold value.
         """
         topics = []
+        _deduplication_sets = []
         logger.info("Filtering by reconstructed counts.")
         for (index, topic) in self.__model_topics:
             filtered = [(word, weight) for (word, weight) in topic
                         if self.__word_count(word)*weight >= min_count]
-            if len(filtered) == 0:
-                continue
-            topics.append((index, filtered))
+            if len(filtered) > 0:
+                _words = {w for (w, _) in filtered}
+                if _words not in _deduplication_sets:
+                    topics.append((index, filtered))
+                    _deduplication_sets.append(_words)
         self.__model_topics = topics
         logger.info("Done.")
 
@@ -178,7 +181,8 @@ class TopicsProcessor:
                             processes=self.__n_process)
         logger.info("Computing topic coherences.")
         values = cm.get_coherence_per_topic()
-        co_ids = {i for (i, v) in enumerate(values) if v >= threshold}
+        values = zip([t_id for (t_id, _) in self.__model_topics], values)
+        co_ids = {t_id for (t_id, v) in values if v >= threshold}
         topics = [(t_id, topic) for (t_id, topic) in self.__model_topics if t_id in co_ids]
         logger.info("Done.")
         self.__model_topics = topics
