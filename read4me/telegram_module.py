@@ -522,12 +522,12 @@ def run():
                                          filters.Entity(MessageEntity.URL), link_request)],
             states={
                 CHOICE: [CallbackQueryHandler(choice),
-                         MessageHandler(filters.TEXT & filters.Regex("^stop$"), end_state),
-                         MessageHandler(filters.TEXT & filters.Regex("^help$"), topics_help),
+                         MessageHandler(filters.TEXT & filters.Regex("^[Ss]top$"), end_state),
+                         MessageHandler(filters.TEXT & filters.Regex("^[Hh]elp$"), topics_help),
                          MessageHandler(filters.ALL, wrong_input)],
 
-                ADD: [MessageHandler(filters.TEXT & filters.Regex("^stop$"), end_state),
-                      MessageHandler(filters.TEXT & filters.Regex("^help$"), topics_help),
+                ADD: [MessageHandler(filters.TEXT & filters.Regex("^[Ss]top$"), end_state),
+                      MessageHandler(filters.TEXT & filters.Regex("^[Hh]elp$"), topics_help),
                       MessageHandler(filters.TEXT & ~filters.COMMAND &
                                      ~(filter_confirm | filter_deny) &
                                      ~filters.Entity(MessageEntity.URL), topic_add),
@@ -535,26 +535,26 @@ def run():
 
                 LOOP_ADD: [MessageHandler(filters.TEXT & ~filters.COMMAND & filter_confirm, topic_add_again),
                            MessageHandler(filters.TEXT & ~filters.COMMAND & filter_deny, topics_request),
-                           MessageHandler(filters.TEXT & filters.Regex("^help$"), topics_help),
-                           MessageHandler(filters.TEXT & filters.Regex("^stop$"), end_state),
+                           MessageHandler(filters.TEXT & filters.Regex("^[Hh]elp$"), topics_help),
+                           MessageHandler(filters.TEXT & filters.Regex("^[Ss]top$"), end_state),
                            MessageHandler(filters.ALL, wrong_input)],
 
                 DELETE: [MessageHandler(filters.TEXT & filter_topics_delete, topics_delete),
                          CommandHandler("topics", topics_request),
-                         MessageHandler(filters.TEXT & filters.Regex("^stop$"), end_state),
-                         MessageHandler(filters.TEXT & filters.Regex("^help$"), topics_help),
+                         MessageHandler(filters.TEXT & filters.Regex("^[Ss]top$"), end_state),
+                         MessageHandler(filters.TEXT & filters.Regex("^[Hh]elp$"), topics_help),
                          MessageHandler(filters.ALL, wrong_input)],
 
                 DELETE_ALL: [MessageHandler(filters.TEXT & filter_confirm, topics_delete_all),
                              MessageHandler(filters.TEXT & filter_deny, topics_request),
-                             MessageHandler(filters.TEXT & filters.Regex("^stop$"), end_state),
-                             MessageHandler(filters.TEXT & filters.Regex("^help$"), topics_help),
+                             MessageHandler(filters.TEXT & filters.Regex("^[Ss]top$"), end_state),
+                             MessageHandler(filters.TEXT & filters.Regex("^[Hh]elp$"), topics_help),
                              CommandHandler("topics", topics_request),
                              MessageHandler(filters.ALL, unanswered)],
 
                 USER_VOTE: [
                     CallbackQueryHandler(feedback),
-                    MessageHandler(filters.TEXT & filters.Regex("^stop"), end_state),
+                    MessageHandler(filters.TEXT & filters.Regex("^[Ss]top"), end_state),
                     MessageHandler(filters.ALL, waiting_score)],
 
                 ConversationHandler.TIMEOUT: [MessageHandler(filters.ALL, time_expired)],
