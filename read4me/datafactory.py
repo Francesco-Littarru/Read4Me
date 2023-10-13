@@ -261,7 +261,7 @@ class CorpusBuilder:
     __stop_set = {'_', '%', 'p', 've', 'm', 'up', 'k', 'a', 'p', 't', 'v', 'r', 'g', 'h', 'q', 'z', 'b', 'f',
                   'd', 'o', 'num', 'news', 'say', 'get', 'year', 'share', 'make', 'comment', 'people', 'week', 'month',
                   'hour', 'name', 'th', 'of', '°', 'an', 'at', 'not', 'this', 'as', 'to', 'go', 're', 'come', 'thing',
-                  'day', 'time', 'do', 'am', 'pm', 'co', 'have', 'take'}
+                  'day', 'time', 'do', 'am', 'pm', 'co', 'have', 'take', 'way', 'end'}
     __pos_set = {
         # "ADJ",      #: "adjective"
         # "ADP",      #: "adposition",
@@ -406,8 +406,12 @@ class CorpusBuilder:
 
         existing_ones = []
         if only_missing:
-            to_process = [path for f_id, path in enumerate(self.__paths.text_corpus_files)
-                          if not self.__paths.pkl_corpus_files[f_id].is_file()]
+            to_process = []
+            to_process_ids = []
+            for f_id, path in enumerate(self.__paths.text_corpus_files):
+                if not self.__paths.pkl_corpus_files[f_id].is_file():
+                    to_process.append(path)
+                    to_process_ids.append(f_id)
             existing_ones = [self.__paths.pkl_corpus_files[f_id]
                              for f_id, _ in enumerate(self.__paths.text_corpus_files)
                              if self.__paths.pkl_corpus_files[f_id].is_file()]
@@ -416,6 +420,7 @@ class CorpusBuilder:
                 self.load_corpus(files=existing_ones)
         else:
             to_process = self.__paths.text_corpus_files
+            to_process_ids = [*range(len(to_process))]
 
         logger.info("Loading spacy model.")
         nlp = spacy.load("en_core_web_md", disable=['ner'])
@@ -433,7 +438,7 @@ class CorpusBuilder:
             docs = [[word for word in CorpusBuilder.clean_doc(doc).split(" ") if word not in stop]
                     for doc in docs]
             docs = [doc for doc in docs if doc != ['']]
-            pkl_file = self.__paths.pkl_corpus_files[len(existing_ones) + c_id]
+            pkl_file = self.__paths.pkl_corpus_files[to_process_ids[c_id]]  # get pickle file name
             self.__corpus = [*self.__corpus, *docs]
             with pkl_file.open('wb') as file:
                 pickle.dump(docs, file)
