@@ -18,7 +18,7 @@ To use the class simply initialize a Doc instance with the document string
 
 then process the document using the following:
 
-* A function that takes a string, clean the text and returns a string.
+* A function that takes a string, cleans the text and returns a string.
 * A set of Part-of-Speech tags that defines which types of words to keep.
   (see here for tags: https://universaldependencies.org/u/pos/)
 * Models:
@@ -31,9 +31,9 @@ then process the document using the following:
 
 .. code-block::
 
-    doc.process(w2v, tfidf, dct, nlp, pos_set, topics)
+    doc.process(w2v, tfidf, dct, nlp, pos_set, topics, topic_ids)
 
-After the processing, some of the info you can get from the doc instance are:
+After the processing, some of the info you can get from the Doc instance are:
 
 * The number of sentences :attr:`~Doc.num_sentences`.
 * Most frequent topics :attr:`~Doc.topic_counts`.
@@ -84,11 +84,14 @@ class Doc:
         self.__doc_topics: dict[int, list[tuple[int, float]]] = defaultdict(list)  # topic_id: list most similar sents
         self.__topic_counts: dict[int, int] = dict()
         self.__similarity_fallback: bool = False
+        self.__to_real_ids: list[int] = []
+        self.__from_real_ids: dict[int, int] = dict()
 
     def process(self,
                 w2v: KeyedVectors, tfidf: TfidfModel, dct: Dictionary, nlp: spacy.Language,
                 pos_set: set[str],
                 topics: NDArray,
+                topic_ids: list[int] = None,
                 text_cleaner: Callable[[str], str] = lambda txt: txt,
                 min_similarity: float = 0.6,
                 topics_per_sentence: int = 2) -> Self | None:
@@ -110,12 +113,21 @@ class Doc:
         :param nlp: Spacy language model, loaded with `spacy.load() <https://spacy.io/usage/models/>`_.
         :param pos_set: A set of Part-of-Speech strings. See https://universaldependencies.org/u/pos/.
         :param topics: Topic vectors.
+        :param topic_ids: List of real topic Ids for the topic vectors.
         :param text_cleaner: Cleaning function, any function that takes a string as an argument and returns a string.
         :param min_similarity: Similarity threshold for the mapping of topics with sentences.
         :param topics_per_sentence: Maximum number of topics that should be mapped to each sentence above the similarity
                threshold.
         :return: None if there are problems processing the document, otherwise return the instance.
         """
+        if topic_ids:
+            if len(topic_ids) != len(topics):
+                raise RuntimeError("The number of topics is different from the number of topic ids!")
+            self.__to_real_ids = topic_ids
+            self.__from_real_ids = dict(zip(topic_ids, [*range(len(topic_ids))]))
+        else:
+            self.__to_real_ids = [*range(len(topics))]
+            self.__from_real_ids = dict(zip([*range(len(topics))], [*range(len(topics))]))
 
         doc = nlp(self.__doc)
         if detect(re.sub(r"\n", " ", doc.text))['lang'] != 'en':
@@ -227,7 +239,8 @@ class Doc:
 
         :param topn: Maximum number of topics to use.
         """
-        highest_counts = sorted([(t_id, len(self.__doc_topics[t_id])) for t_id in self.__doc_topics.keys()],
+        highest_counts = sorted([(self.__to_real_ids[_t], len(self.__doc_topics[_t]))
+                                 for _t in self.__doc_topics.keys()],
                                 key=lambda x: x[1], reverse=True)[:topn]
         self.__topic_counts = dict(highest_counts)
 
@@ -257,7 +270,7 @@ class Doc:
 
     def excerpt(self, topic_id: int) -> str:
         """
-        Given a topic id, get the most similar sentence to it.
+        Given a real topic id, get the most similar sentence to it.
 
         :param topic_id: Id of the topic, starting from 0.
         :return: Sentence as a string.
@@ -266,12 +279,12 @@ class Doc:
 
     def most_similar_sentence_id(self, topic_id: int) -> int:
         """
-        Given a topic id, get the id of the most similar sentence to it.
+        Given a real topic id, get the id of the most similar sentence to it.
 
         :param topic_id: Id of the topic, starting from 0.
         :return: Sentence id.
         """
-        return int(numpy.argmax(self.__similarity_matrix[:, topic_id]))
+        return int(numpy.argmax(self.__similarity_matrix[:, self.__from_real_ids[topic_id]]))
 
     def vector(self) -> NDArray:
         """
@@ -280,7 +293,8 @@ class Doc:
 
         :return: Numpy NDArray vector.
         """
-        counts = self.topic_counts
+        counts = dict([(self.__from_real_ids[t_id], count)
+                      for (t_id, count) in self.topic_counts.items()])
         vec = numpy.zeros(self.__similarity_matrix.shape[1])
         if not self.processed or len(counts) == 0:
             return vec

@@ -52,6 +52,7 @@ def run():
 
     # get the necessary models
     [nlp, dct, tfidf, w2v, topics, topics_description] = [*get_models(['all'])]
+    t_ids = [td[0] for td in topics_description]
 
     CHOICE, ADD, DELETE, DELETE_ALL, LOOP_ADD, USER_VOTE = range(6)
 
@@ -123,7 +124,7 @@ def run():
             await send_message("I'm sorry, I couldn't retrieve the article.")
             clear_tmp_data(context)
             return ConversationHandler.END
-        doc = Doc(text).process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, topics, CorpusBuilder.clean_doc)
+        doc = Doc(text).process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, topics, t_ids, CorpusBuilder.clean_doc)
         if doc is None:
             await send_message("I'm sorry, there was a problem extracting the article.")
             clear_tmp_data(context)
@@ -137,7 +138,7 @@ def run():
         if user_base.user(user_id).has_custom_topics():
             custom_topics = numpy.asarray(user_base.user(user_id).custom_topics)
             doc_custom: Doc = Doc(text). \
-                process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, custom_topics, CorpusBuilder.clean_doc)
+                process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, custom_topics, text_cleaner=CorpusBuilder.clean_doc)
             score_custom = user_base.score_custom_topics(doc_custom, user_id)
             if bool(score_custom) and not doc_custom.has_triggered_fallback:
                 for t_id, description in score_custom:
@@ -152,9 +153,9 @@ def run():
         # proceed on scoring with the shared topics
         score = user_base.predict_interest(doc, user_id)
         await send_message(scorer(score))
-        topics_ids = list(doc.topic_counts.keys())
 
         # add message to show the topics
+        topics_ids = list(doc.topic_counts.keys())
         top_msg = "It seems to be talking about these topics:\n"
         if doc.has_triggered_fallback:
             top_msg = "The article is poorly related with these topics:\n"
@@ -332,7 +333,8 @@ def run():
             clear_tmp_data(context)
             return ConversationHandler.END
         elif selected == 2:
-            msg = await context.bot.send_message(update.effective_chat.id, "Type your topic, type 'help' if needed or 'stop' to quit.")
+            msg = await context.bot.send_message(update.effective_chat.id,
+                                                 "Type your topic, type 'help' if needed or 'stop' to quit.")
             context.user_data[_LAST_MSG_ID_] = msg.id
             return ADD
         elif selected == 3:
@@ -477,7 +479,7 @@ def run():
             text = CorpusBuilder.doc_from_link(link)
             if not text:
                 return "I can't read the article, sorry"
-            doc: Doc = Doc(text).process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, topics, CorpusBuilder.clean_doc)
+            doc: Doc = Doc(text).process(w2v, tfidf, dct, nlp, {"VERB", "NOUN"}, topics, t_ids, CorpusBuilder.clean_doc)
             if not doc:
                 return "I can't read the link, sorry"
             topics_ids = list(doc.topic_counts.keys())
