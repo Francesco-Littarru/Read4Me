@@ -32,7 +32,7 @@ class FilterConfirm(MessageFilter):
     The bot expects a "yes/no" answer. "yes" is received.
     """
     def filter(self, message):
-        return message.text.lower() == "yes"
+        return message.text.lower() in ['yes', 'y']
 
 
 class FilterDeny(MessageFilter):
@@ -40,7 +40,7 @@ class FilterDeny(MessageFilter):
     The bot expects a "yes/no" answer. "no" is received.
     """
     def filter(self, message):
-        return message.text.lower() == "no"
+        return message.text.lower() in ['no', 'n']
 
 
 filter_bot_inline_input = FilterBotInlineInput()

@@ -77,13 +77,13 @@ def run():
         :return: Message to send to the user.
         """
         if -0.6 <= score < -0.1:
-            msg = "I don't think you would be interested in it"
+            msg = "Not very interesting."
         elif score < -0.6:
-            msg = "Not very interesting"
+            msg = "Skip this one.."
         elif 0.1 < score <= 0.6:
-            msg = "I think you would be interested in it"
+            msg = "Perhaps, you might be interested in it."
         elif score > 0.6:
-            msg = "Very interesting"
+            msg = "Very interesting!"
         else:
             msg = "I'm unsure about this, let me know if you read it."
         q = int(abs(score * 10))
@@ -96,7 +96,7 @@ def run():
             a_message = f"(-){space} |{dash}>{empty}(+)"
         else:
             a_message = f"(-){space}<|>{space}(+)"
-        return f"My interest prediction score for you is: {score:2.2f}\n{a_message}\n{msg}"
+        return f"My interest prediction is: {score:2.2f}\n{a_message}\n{msg}"
 
     def clear_tmp_data(context: ContextTypes.DEFAULT_TYPE):
         """
@@ -142,8 +142,8 @@ def run():
             score_custom = user_base.score_custom_topics(doc_custom, user_id)
             if bool(score_custom) and not doc_custom.has_triggered_fallback:
                 for t_id, description in score_custom:
-                    msg += "• " + description + "\n "
-                await send_message("It matches with one or more of your topics!\n" + bold(msg), parse_mode='HTML')
+                    msg += ">>> " + description + "\n "
+                await send_message("It matches with one or more of your topics!!\n" + bold(msg), parse_mode='HTML')
                 topics_ids = list(doc_custom.topic_counts.keys())
                 msg = ""
                 excerpts = set(doc_custom.excerpt(t) for t in topics_ids)
@@ -156,9 +156,9 @@ def run():
 
         # add message to show the topics
         topics_ids = list(doc.topic_counts.keys())
-        top_msg = "It seems to be talking about these topics:\n"
+        top_msg = "The article matches with these topics:\n"
         if doc.has_triggered_fallback:
-            top_msg = "The article is poorly related with these topics:\n"
+            top_msg = "The article is <b>poorly related</b> with these topics:\n"
         top_desc = dict(topics_description)
         top_desc_doc = [" ".join([w for (w, _) in t_s]) for t_s in
                         [top_desc[idx] for idx in topics_ids
@@ -172,7 +172,7 @@ def run():
         excerpts = set(doc.excerpt(t) for t in topics_ids)
         for excerpt in excerpts:
             msg += "\n\t" + excerpt + "\n"
-        await send_message("From the article:\n" + italic(msg), parse_mode="HTML")
+        await send_message("These are some excerpts from the article:\n" + italic(msg), parse_mode="HTML")
 
         # build the feedback-keyboard and show it to the user
         inline_keyboard = [[InlineKeyboardButton("-2", callback_data=-2),
@@ -193,7 +193,7 @@ def run():
         """
         query = update.callback_query
         await query.answer()
-        await query.edit_message_text(text=f"Your vote: {query.data}")
+        await query.edit_message_text(text=f"You gave it a score of: {query.data}")
         context.bot_data[_USER_BASE_].update_user_preferences(
             update.effective_user.id,
             context.user_data['doc'],
@@ -207,7 +207,8 @@ def run():
         """
         Send a warning message if the user is trying to issue another request before leaving the feedback.
         """
-        text = "Please leave a feedback for the article before issuing other requests or type 'stop'."
+        text = "^^^^^^ Please leave a feedback for the previous article before sending me other requests!\n" \
+               "..or type 'stop' and then we can move on.."
         await context.bot.send_message(chat_id=update.effective_chat.id,
                                        text=text,
                                        reply_to_message_id=context.user_data[_LAST_MSG_ID_])
@@ -216,7 +217,8 @@ def run():
         """
         Close the conversation.
         """
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Bye!")
+        await context.bot.send_message(chat_id=update.effective_chat.id,
+                                       text="The conversation is closed, now you can send me other requests.")
         clear_tmp_data(context)
         return ConversationHandler.END
 
@@ -237,18 +239,28 @@ def run():
         """
         send_message = partial(context.bot.send_message, update.effective_chat.id)
         msg1 = "Hi!\n" \
-               "This is the helper page of the Read4Me telegram bot.\n\n" \
-               "My job is to help you save some of your time online.\n" \
-               "I can read web pages and analyze their content.\n" \
-               "Send me a link and I will show you the most relevant pieces of it.\n\n" \
-               "Leave a feedback after you read the original page so I can learn your reading preferences " \
-               "and advise you better on the next ones you send me. " \
-               "(I won't send anything of what I learn to anyone)"
-        msg2 = "Also you can define your /topics and I will match them with the pages you send me." \
-               "\n\nTo read this guide again type /help\n" \
-               "To see what you can do with the bot type /commands"
-        await send_message(msg1)
+               "This is the helper page of the Read4Me telegram bot.\n" \
+               "I can do a couple of things for you:\n\n" \
+               "1) I can read web articles and analyze their content!\n" \
+               "<b>Send me a link in this chat!</b>\n" \
+               "I will extract some information from the article that will let you see through it --- so that " \
+               "you can decide if it's worth its reading time..\n\n" \
+               "2) I can learn your reading preferences!\n" \
+               "<b>Leave a feedback</b> for the articles you read, " \
+               "so that I can learn which kind of things you like to read and give you a " \
+               "prediction in the future.\n" \
+               "<b> -- I won't send anything to anyone -- </b>\n\n" \
+               "3) I can use your <b>custom topics</b> to spot if an article is related to them!\n" \
+               "Tap /topics to define your custom topics!"
+        msg2 = "Type /help when you want to read this guide again\n" \
+               "Type /commands to see the list of commands you can send me."
+        msg3 = "This is an open source project, check the code at:\n" \
+               "https://github.com/Francesco-Littarru/Read4Me\n\n" \
+               "You can also read the documentation here:\n" \
+               "https://read4me.readthedocs.io/en/latest/"
+        await send_message(msg1, parse_mode='HTML')
         await send_message(msg2)
+        await send_message(msg3, disable_web_page_preview=True)
 
     async def commands(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
@@ -263,7 +275,7 @@ def run():
               "some of the most relevant sentences from the article\n\n" \
               f"<b>Call me from any chat and give me a link</b>, " \
               f"like this:\n {context.bot.name} <i><u>link</u></i> \n" \
-              "I will send you some of the most relevant passages from the article"
+              "Tap <i>Get Article Info</i> and I will send you some excerpts from the article."
         await context.bot.send_message(update.effective_chat.id, msg, parse_mode='HTML')
 
     async def post_init(application: Application):
@@ -282,15 +294,13 @@ def run():
         Explanation on how to define topics.
         """
         msg = "A topic is a concept described with a group of words.\n\n" \
-              "To define a personal topic, you can type a single word or a list of linked words, " \
-              'for example: <b>\n - "music", \n - "food recipe", \n - "money investment stock market"</b>.\n' \
-              'If you use single words, avoid generic terms such as <b>"news"</b>, ' \
+              "To define a personal topic, you can type a single word or a list of words, " \
+              'for example:\n\n<b> - "music", \n - "food recipe", \n - "money investment stock market"</b>.\n\n' \
+              'Tip: If you use a single word, avoid generic terms such as <b>"news"</b>, ' \
               "as they tend to relate to almost anything in the web.\n\n" \
-              "Each time you will send me an link to an article, " \
-              "I will tell you which ones of your topics do match with it\n\n" \
-              "Tip: If you define topics about articles that you don't like " \
+              "Tip: Define topics about things that you <b>don't</b> like, " \
               "you can spot them faster!\n\n" \
-              "If you requested this help guide while typing a topic, now you can continue typing it."
+              "If you requested help while typing a topic, now you can continue typing it."
         await context.bot.send_message(update.effective_chat.id, msg, parse_mode="HTML")
         return None
 
@@ -300,14 +310,14 @@ def run():
         """
         send_message = partial(context.bot.send_message, update.effective_chat.id)
         user: UserPreferences = context.bot_data[_USER_BASE_].user(update.effective_user.id)
-        inline_keyboard = [[InlineKeyboardButton("Add topic", callback_data=2)],
+        inline_keyboard = [[InlineKeyboardButton("Add a topic", callback_data=2)],
                            [InlineKeyboardButton("Exit", callback_data=1)]]
         if user.has_custom_topics():
             topics_vis: str = "Your topics:\n"
             for t_id, topic in enumerate(user.custom_topics_descriptions):
                 topics_vis += f"\t{bold(str(t_id))} - {italic(topic)}\n"
             await send_message(topics_vis, parse_mode="HTML")
-            inline_keyboard[0].append(InlineKeyboardButton("Delete topic", callback_data=3))
+            inline_keyboard[0].append(InlineKeyboardButton("Delete a topic", callback_data=3))
             inline_keyboard[0].append(InlineKeyboardButton("Delete all", callback_data=4))
         else:
             await send_message("You don't have custom topics.")
@@ -333,8 +343,10 @@ def run():
             clear_tmp_data(context)
             return ConversationHandler.END
         elif selected == 2:
-            msg = await context.bot.send_message(update.effective_chat.id,
-                                                 "Type your topic, type 'help' if needed or 'stop' to quit.")
+            msg = await context.bot.send_message(
+                update.effective_chat.id,
+                "Type <i><b>help</b></i> if needed or <i><b>stop</b></i> to quit.\n"
+                "Type your topic:", parse_mode="HTML")
             context.user_data[_LAST_MSG_ID_] = msg.id
             return ADD
         elif selected == 3:
@@ -371,11 +383,11 @@ def run():
             if oov:
                 await context.bot.send_message(update.effective_chat.id,
                                                f"I don't know any of these words: {[*oov]}")
-                msg = await context.bot.send_message(update.effective_chat.id, f"Please try with other ones")
+                msg = await context.bot.send_message(update.effective_chat.id, f"I'm sorry, try with other words")
                 context.user_data[_LAST_MSG_ID_] = msg.id
                 return ADD
         msg = await context.bot.send_message(update.effective_chat.id,
-                                             "Do you want to insert another topic? (yes/no)\ntype 'stop' to quit")
+                                             "Do you want to add another topic? (yes/no)\ntype 'stop' to quit")
         context.user_data[_LAST_MSG_ID_] = msg.id
         return LOOP_ADD
 
@@ -446,8 +458,9 @@ def run():
         await context.bot.send_message(update.effective_chat.id,
                                        f"Sorry, but this doesn't seem to be a valid input,\n"
                                        f"please type the topic as a list of words.\n"
-                                       f"Type 'help' if needed or 'stop' to quit.",
-                                       reply_to_message_id=context.user_data[_LAST_MSG_ID_])
+                                       f"Type <i><b>help</b></i> if needed or <i><b>stop</b></i> to quit.",
+                                       reply_to_message_id=context.user_data[_LAST_MSG_ID_],
+                                       parse_mode="HTML")
         return None
 
     async def wrong_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -455,7 +468,8 @@ def run():
         Generic wrong input message.
         """
         await context.bot.send_message(update.effective_chat.id,
-                                       "Please make a valid choice before continuing, or type 'stop' to quit.",
+                                       "^^^^^^ Please make a valid choice..\n"
+                                       " ..or type 'stop' to quit the conversation",
                                        reply_to_message_id=context.user_data[_LAST_MSG_ID_])
         return None
 
@@ -493,8 +507,9 @@ def run():
             InlineQueryResultArticle(
                 id=str(uuid4()),
                 title="Get Article Info",
-                input_message_content=InputTextMessageContent(message_text=f"{link}\n" + italic(extract()),
-                                                              parse_mode='HTML')
+                input_message_content=InputTextMessageContent(
+                    message_text=f"{link}\n" + italic(extract()),
+                    parse_mode='HTML')
             )
         ]
         await update.inline_query.answer(res)
