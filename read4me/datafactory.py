@@ -258,10 +258,10 @@ class CorpusBuilder:
     This class is responsible for generating a normalized text corpus from the News Dataset of the CommonCrawl project.
     It is possible to download, extract, normalize and serialize the corpus with using an instance of this class.
     """
-    __stop_set = {'_', '%', 'p', 've', 'm', 'up', 'k', 'a', 'p', 't', 'v', 'r', 'g', 'h', 'q', 'z', 'b', 'f',
+    __stop_set = {'_', '%', 'p', 've', 'm', 'up', 'k', 'a', 'p', 't', 'v', 'r', 'g', 'h', 'q', 'z', 'b', 'f', 'l',
                   'd', 'o', 'num', 'news', 'say', 'get', 'year', 'share', 'make', 'comment', 'people', 'week', 'month',
                   'hour', 'name', 'th', 'of', '°', 'an', 'at', 'not', 'this', 'as', 'to', 'go', 're', 'come', 'thing',
-                  'day', 'time', 'do', 'am', 'pm', 'co', 'have', 'take', 'way', 'end'}
+                  'day', 'time', 'number', 'datum', 'half', 'do', 'am', 'no', 'pm', 'co', 'have', 'take', 'way', 'end'}
     __pos_set = {
         # "ADJ",      #: "adjective"
         # "ADP",      #: "adposition",
