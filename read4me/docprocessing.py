@@ -275,7 +275,7 @@ class Doc:
         :param topic_id: Id of the topic, starting from 0.
         :return: Sentence as a string.
         """
-        return self.sentence(self.most_similar_sentence_id(topic_id))
+        return re.sub("(\n)+", "(\n)", self.sentence(self.most_similar_sentence_id(topic_id)))
 
     def most_similar_sentence_id(self, topic_id: int) -> int:
         """
