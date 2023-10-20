@@ -7,7 +7,7 @@ This project consists of:
 - **Python Modules**, to build a news dataset, to process topics and documents, and to manage telegram user's data.
 - **Python Scripts** that can be run from a bash console, to automate the corpus and topics creation and processing.
 
-Go the the :ref:`Main Telegram Bot <main_tg_bot>` section to see what you can do with the bot and how it works.
+Go the the :ref:`Main Telegram Bot User Guide<main_tg_bot>` section to see what you can do with the bot and how it works.
 
 In the :ref:`Modules Documentation <modules_doc>` is described each module in detail with examples of usage.
 
@@ -30,7 +30,7 @@ A comprehensive streamlined view of the full execution can be summarized in few 
     :caption: Telegram Bot
     :maxdepth: 1
 
-    Main Telegram Bot <read4me.telegram_module>
+    Main Telegram Bot User Guide <read4me.telegram_module>
     Telegram Custom Filters <read4me.custom_filters>
 
 .. toctree::
