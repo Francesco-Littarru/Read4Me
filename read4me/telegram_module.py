@@ -293,7 +293,7 @@ def run():
         """
         Explanation on how to define topics.
         """
-        msg = "A topic is a concept described with a group of words.\n\n" \
+        msg = "A topic is a concept described by a group of words.\n\n" \
               "To define a personal topic, you can type a single word or a list of words, " \
               'for example:\n\n<b> - "music", \n - "food recipe", \n - "money investment stock market"</b>.\n\n' \
               'Tip: If you use a single word, avoid generic terms such as <b>"news"</b>, ' \
@@ -336,7 +336,7 @@ def run():
         query = update.callback_query
         await query.answer()
         selected = int(query.data)
-        selection = Enum('choice', ['Exit', 'Add topic', 'Delete one', 'Delete all'])
+        selection = Enum('choice', ['Exit', 'Add a topic', 'Delete a topic', 'Delete all'])
         await query.edit_message_text(text=f"You chose: {bold(selection(selected).name)}", parse_mode='HTML')
         if selected == 1:
             await send_message("Bye!")
@@ -345,8 +345,8 @@ def run():
         elif selected == 2:
             msg = await context.bot.send_message(
                 update.effective_chat.id,
-                "Type <i><b>help</b></i> if needed or <i><b>stop</b></i> to quit.\n"
-                "Type your topic:", parse_mode="HTML")
+                "Type <i><b>help</b></i> to see how to define a topic or type <i><b>stop</b></i> to exit.\n"
+                "Type a topic that you want to add:", parse_mode="HTML")
             context.user_data[_LAST_MSG_ID_] = msg.id
             return ADD
         elif selected == 3:
