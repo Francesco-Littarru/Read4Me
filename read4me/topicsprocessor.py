@@ -196,7 +196,6 @@ class TopicsProcessor:
         """
         logger.info("Rescaling word weights.")
         wtm = self.__map_words_to_topics()
-        probs = TopicsProcessor.topic_probabilities(self.__model_topics)
         topic_recount = defaultdict(list)
         for word in wtm.keys():
             weights = numpy.asarray([w for (_, w) in wtm[word]])
@@ -204,7 +203,7 @@ class TopicsProcessor:
             weights = weights/sum(weights)
             wtm[word] = list(zip(topic_ids, weights))
             for (t_id, w) in wtm[word]:
-                topic_recount[t_id].append((word, w*probs[t_id]))
+                topic_recount[t_id].append((word, w))
         self.__model_topics = [(t_id, sorted(topic_recount[t_id], key=lambda x: x[1], reverse=True))
                                for t_id in sorted(topic_recount.keys())]
         logger.info("Done.")
@@ -250,7 +249,7 @@ class TopicsProcessor:
         :return: Dict with topics as keys and topic probabilities as values.
         """
         values = [sum([e[1] for e in topic]) for (_, topic) in topics]
-        probs = numpy.asarray(values)/sum(values)
+        probs = numpy.asarray(values)
         probabilities: defaultdict[int, float] = defaultdict(float)
         for index, (t_id, topic) in enumerate(topics):
             probabilities[t_id] = probs[index]
